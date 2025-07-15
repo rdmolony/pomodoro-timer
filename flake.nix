@@ -43,9 +43,7 @@
           
           inherit buildInputs nativeBuildInputs;
           
-          mesonFlags = [
-            "-Dprefix=${placeholder "out"}"
-          ];
+          mesonFlags = [];
           
           postInstall = ''
             # Compile GSettings schemas
