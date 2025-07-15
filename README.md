@@ -48,6 +48,50 @@ nix develop
 run-dev
 ```
 
+## Installation
+
+### Method 1: NixOS System Package
+
+Add to your NixOS configuration:
+
+```nix
+# configuration.nix or flake.nix
+{
+  environment.systemPackages = with pkgs; [
+    (pkgs.callPackage (builtins.fetchGit {
+      url = "https://github.com/user/pomodoro-timer";
+      rev = "main";  # or specific commit
+    }) {})
+  ];
+}
+```
+
+Then rebuild: `sudo nixos-rebuild switch`
+
+### Method 2: User Installation
+
+```bash
+# Clone and install to user profile
+git clone https://github.com/user/pomodoro-timer
+cd pomodoro-timer
+nix build
+nix profile install ./result
+
+# The app will be available in your applications menu
+```
+
+### Method 3: Temporary Installation
+
+```bash
+# Install temporarily (removed on reboot)
+git clone https://github.com/user/pomodoro-timer
+cd pomodoro-timer
+nix shell
+
+# Or install from GitHub directly
+nix shell github:user/pomodoro-timer
+```
+
 ## Build Instructions
 
 ### Method 1: Using Nix (Recommended)
