@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Pomodoro Timer
+Comment=A GNOME Pomodoro timer with 20-20-20 rule reminders
+Exec=pomodoro-timer
+Icon=com.github.user.PomodoroTimer
+Terminal=false
+Type=Application
+Categories=GTK;GNOME;Utility;
+StartupNotify=true
+Keywords=pomodoro;timer;productivity;20-20-20;eye-care;

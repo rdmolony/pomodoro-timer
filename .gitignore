@@ -1,0 +1,25 @@
+# Build directories
+build/
+.build/
+
+# Nix
+result
+result-*
+
+# direnv
+.direnv/
+.envrc
+
+# Meson
+wrap-file-downloader-*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Runtime
+*.log

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.user.PomodoroTimer</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Pomodoro Timer</name>
+  <summary>A GNOME Pomodoro timer with 20-20-20 rule reminders</summary>
+  <description>
+    <p>
+      A native GNOME application that implements the Pomodoro Technique with integrated 
+      20-20-20 rule reminders for eye health. Every 20 minutes, the app reminds you to 
+      look at something 20 feet away for 20 seconds to reduce eye strain.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Customizable Pomodoro timer (default 25 minutes)</li>
+      <li>20-20-20 rule notifications every 20 minutes</li>
+      <li>Native GNOME integration with libadwaita</li>
+      <li>Audio and visual notifications</li>
+      <li>Persistent notifications that require acknowledgment</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main timer interface</caption>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://github.com/user/pomodoro-timer</url>
+  <url type="bugtracker">https://github.com/user/pomodoro-timer/issues</url>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="1.0.0" date="2025-07-15">
+      <description>
+        <p>Initial release</p>
+      </description>
+    </release>
+  </releases>
+</component>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="pomodoro-timer">
+  <schema id="com.github.user.PomodoroTimer" path="/com/github/user/PomodoroTimer/">
+    <key name="window-width" type="i">
+      <default>400</default>
+      <summary>Window width</summary>
+      <description>The width of the main window</description>
+    </key>
+    <key name="window-height" type="i">
+      <default>300</default>
+      <summary>Window height</summary>
+      <description>The height of the main window</description>
+    </key>
+    <key name="pomodoro-duration" type="i">
+      <default>25</default>
+      <summary>Pomodoro duration in minutes</summary>
+      <description>The duration of each Pomodoro session in minutes</description>
+    </key>
+    <key name="break-duration" type="i">
+      <default>5</default>
+      <summary>Break duration in minutes</summary>
+      <description>The duration of short breaks in minutes</description>
+    </key>
+    <key name="long-break-duration" type="i">
+      <default>15</default>
+      <summary>Long break duration in minutes</summary>
+      <description>The duration of long breaks in minutes</description>
+    </key>
+    <key name="enable-20-20-20" type="b">
+      <default>true</default>
+      <summary>Enable 20-20-20 rule notifications</summary>
+      <description>Whether to show 20-20-20 rule notifications every 20 minutes</description>
+    </key>
+    <key name="notification-sound" type="b">
+      <default>true</default>
+      <summary>Enable notification sounds</summary>
+      <description>Whether to play sounds with notifications</description>
+    </key>
+  </schema>
+</schemalist>
