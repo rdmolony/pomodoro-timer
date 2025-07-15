@@ -45,3 +45,7 @@ gnome.compile_resources('pomodoro-timer-resources',
   source_dir: '.',
   c_name: 'pomodoro_timer'
 )
+
+install_data('icons/hicolor/scalable/apps/com.github.user.PomodoroTimer.svg',
+  install_dir: join_paths(get_option('datadir'), 'icons/hicolor/scalable/apps')
+)
