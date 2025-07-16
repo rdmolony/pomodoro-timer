@@ -18,9 +18,9 @@ This plan follows TDD methodology as outlined in CLAUDE.md. Each test should be 
 - [x] NotificationManager should initialize without errors
 - [x] NotificationManager should show basic notifications
 - [x] NotificationManager should show 20-20-20 notifications with actions
-- [ ] NotificationManager should handle sound settings correctly
-- [ ] NotificationManager should handle notification errors gracefully
-- [ ] NotificationManager should schedule snooze reminders correctly
+- [x] NotificationManager should handle sound settings correctly
+- [x] NotificationManager should handle notification errors gracefully
+- [x] NotificationManager should schedule snooze reminders correctly
 
 ### 3. Application Tests
 - [ ] Application should initialize with correct app ID
