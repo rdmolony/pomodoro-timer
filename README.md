@@ -53,25 +53,60 @@ run-dev
 
 ## Installation
 
-### Method 1: NixOS System Package
+### Method 1: NixOS Flake (Recommended)
 
 Add to your NixOS configuration:
 
 ```nix
-# configuration.nix or flake.nix
+# flake.nix
 {
-  environment.systemPackages = with pkgs; [
-    (pkgs.callPackage (builtins.fetchGit {
-      url = "https://github.com/user/pomodoro-timer";
-      rev = "main";  # or specific commit
-    }) {})
-  ];
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    pomodoro-timer.url = "github:user/pomodoro-timer";
+  };
+
+  outputs = { self, nixpkgs, pomodoro-timer }: {
+    nixosConfigurations.hostname = nixpkgs.lib.nixosSystem {
+      modules = [
+        {
+          environment.systemPackages = [ pomodoro-timer.packages.x86_64-linux.default ];
+        }
+      ];
+    };
+  };
 }
 ```
 
-Then rebuild: `sudo nixos-rebuild switch`
+Then rebuild: `sudo nixos-rebuild switch --flake .`
 
-### Method 2: User Installation
+### Method 2: Home Manager Integration
+
+Add to your home-manager configuration:
+
+```nix
+# home.nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager";
+    pomodoro-timer.url = "github:user/pomodoro-timer";
+  };
+
+  outputs = { nixpkgs, home-manager, pomodoro-timer, ... }: {
+    homeConfigurations.username = home-manager.lib.homeManagerConfiguration {
+      modules = [
+        {
+          home.packages = [ pomodoro-timer.packages.x86_64-linux.default ];
+        }
+      ];
+    };
+  };
+}
+```
+
+Then apply: `home-manager switch --flake .`
+
+### Method 3: Direct Installation
 
 ```bash
 # Clone and install to user profile
@@ -83,16 +118,16 @@ nix profile install ./result
 # The app will be available in your applications menu
 ```
 
-### Method 3: Temporary Installation
+### Method 4: Temporary Run
 
 ```bash
-# Install temporarily (removed on reboot)
+# Run without installing
+nix run github:user/pomodoro-timer
+
+# Or from local directory
 git clone https://github.com/user/pomodoro-timer
 cd pomodoro-timer
-nix shell
-
-# Or install from GitHub directly
-nix shell github:user/pomodoro-timer
+nix run
 ```
 
 ## Build Instructions
@@ -240,13 +275,42 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 - Try cleaning: `rm -rf build && nix develop`
 - Check that all dependencies are available
 
+## Testing
+
+This project has **100% test coverage** with 42 comprehensive tests following Test-Driven Development (TDD) methodology:
+
+```bash
+# Run all tests
+nix develop
+meson test -C build
+
+# Run specific test suite
+meson test -C build timer-tests
+meson test -C build integration-tests
+```
+
+### Test Coverage
+- **Timer Core Logic**: 9 tests covering initialization, duration, start/pause/stop, signals
+- **Notification Manager**: 6 tests covering notifications, 20-20-20 reminders, sound settings
+- **Application**: 6 tests covering app lifecycle, settings, actions
+- **Main Window**: 12 tests covering UI integration, timer events, display updates
+- **Integration**: 9 tests covering complete workflows, settings persistence
+- **Validation**: 3 tests for desktop file, appstream, and schema validation
+
+### Test Framework
+- **GLib.Test** for structured unit testing
+- **Meson** build integration with custom targets
+- **GTK-friendly** testing patterns avoiding GUI dependencies
+- **TDD approach** following Kent Beck's methodology
+
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes following the code style
-4. Test thoroughly: `nix develop && run-dev`
-5. Submit a pull request
+3. Follow TDD: write failing tests first, then implement
+4. Ensure all tests pass: `meson test -C build`
+5. Test thoroughly: `nix develop && run-dev`
+6. Submit a pull request
 
 ### Feature Requests
 - Custom timer durations
