@@ -13,12 +13,27 @@ namespace PomodoroTimer.Tests {
             assert_not_reached ();
         }
     }
+    
+    static void test_notification_manager_shows_basic_notifications () {
+        var app = new Application ();
+        var notification_manager = new NotificationManager (app);
+        
+        // This should not throw any errors
+        try {
+            notification_manager.show_notification ("Test Title", "Test Body");
+            // If we reach here, no exception was thrown
+            assert (true);
+        } catch (Error e) {
+            assert_not_reached ();
+        }
+    }
 }
 
 void main (string[] args) {
     Test.init (ref args);
     
     Test.add_func ("/notification-manager/initializes_without_errors", PomodoroTimer.Tests.test_notification_manager_initializes_without_errors);
+    Test.add_func ("/notification-manager/shows_basic_notifications", PomodoroTimer.Tests.test_notification_manager_shows_basic_notifications);
     
     Test.run ();
 }
