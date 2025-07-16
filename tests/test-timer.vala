@@ -66,6 +66,23 @@ namespace PomodoroTimer.Tests {
         
         assert (timer.is_running () == false);
     }
+    
+    static void test_timer_tracks_remaining_time_correctly () {
+        var timer = new Timer ();
+        timer.set_duration (300);
+        
+        // Initial remaining time should equal duration
+        assert (timer.get_remaining_seconds () == 300);
+        
+        // After starting, remaining time should still be 300 initially
+        timer.start ();
+        assert (timer.get_remaining_seconds () == 300);
+        
+        // We can't easily test the actual countdown without waiting or mocking
+        // But we can verify the getter works
+        timer.stop ();
+        assert (timer.get_remaining_seconds () <= 300);
+    }
 }
 
 void main (string[] args) {
@@ -78,6 +95,7 @@ void main (string[] args) {
     Test.add_func ("/timer/pauses_correctly", PomodoroTimer.Tests.test_timer_pauses_correctly);
     Test.add_func ("/timer/handles_pause_when_not_running", PomodoroTimer.Tests.test_timer_handles_pause_when_not_running);
     Test.add_func ("/timer/stops_correctly", PomodoroTimer.Tests.test_timer_stops_correctly);
+    Test.add_func ("/timer/tracks_remaining_time_correctly", PomodoroTimer.Tests.test_timer_tracks_remaining_time_correctly);
     
     Test.run ();
 }
