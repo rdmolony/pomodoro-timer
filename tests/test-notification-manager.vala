@@ -1,16 +1,24 @@
 namespace PomodoroTimer.Tests {
-    public class NotificationManagerTests : GLib.Object {
+    static void test_notification_manager_initializes_without_errors () {
+        // Create a mock application since NotificationManager requires one
+        var app = new Application ();
         
-        // Placeholder for notification manager tests
-        public void test_placeholder () {
-            // This test will pass for now
-            assert (true);
+        NotificationManager? notification_manager = null;
+        
+        // This should not throw any errors
+        try {
+            notification_manager = new NotificationManager (app);
+            assert (notification_manager != null);
+        } catch (Error e) {
+            assert_not_reached ();
         }
     }
 }
 
-void test_notification_manager_main () {
-    var tests = new PomodoroTimer.Tests.NotificationManagerTests ();
+void main (string[] args) {
+    Test.init (ref args);
     
-    Test.add_func ("/notification-manager/placeholder", tests.test_placeholder);
+    Test.add_func ("/notification-manager/initializes_without_errors", PomodoroTimer.Tests.test_notification_manager_initializes_without_errors);
+    
+    Test.run ();
 }

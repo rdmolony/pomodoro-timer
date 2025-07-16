@@ -15,7 +15,7 @@ This plan follows TDD methodology as outlined in CLAUDE.md. Each test should be 
 - [x] Timer should handle pause when not running gracefully
 
 ### 2. Notification Manager Tests
-- [ ] NotificationManager should initialize without errors
+- [x] NotificationManager should initialize without errors
 - [ ] NotificationManager should show basic notifications
 - [ ] NotificationManager should show 20-20-20 notifications with actions
 - [ ] NotificationManager should handle sound settings correctly
@@ -78,4 +78,31 @@ tests/
 ├── test-main-window.vala
 ├── test-integration.vala
 └── meson.build
+```
+
+## Vala Cross-Directory Compilation Workaround
+
+Due to a meson limitation with cross-directory Vala compilation, we use `custom_target` to copy source files from `src/` to the build directory during test compilation. This approach:
+
+- Keeps the source tree clean (no duplicate files in version control)
+- Tests run against the actual source code from `src/`
+- Generated copies are placed in the build directory and cleaned up automatically
+- Each test suite defines its required source file dependencies via custom_target
+
+Example pattern:
+```meson
+source_copy = custom_target('copy-source',
+  input: '../src/source.vala',
+  output: 'source.vala',
+  command: ['cp', '@INPUT@', '@OUTPUT@'],
+  build_by_default: false
+)
+
+test_exe = executable('test-name',
+  files('test-file.vala') + [source_copy],
+  dependencies: [required_deps],
+  install: false,
+  build_by_default: false,
+  vala_args: ['--target-glib=2.72']
+)
 ```
