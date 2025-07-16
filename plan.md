@@ -23,12 +23,12 @@ This plan follows TDD methodology as outlined in CLAUDE.md. Each test should be 
 - [x] NotificationManager should schedule snooze reminders correctly
 
 ### 3. Application Tests
-- [ ] Application should initialize with correct app ID
-- [ ] Application should create settings instance
-- [ ] Application should handle activation correctly
-- [ ] Application should create window and notification manager
-- [ ] Application should handle quit action
-- [ ] Application should handle about action
+- [x] Application should initialize with correct app ID
+- [x] Application should create settings instance
+- [x] Application should handle activation correctly
+- [x] Application should create window and notification manager
+- [x] Application should handle quit action
+- [x] Application should handle about action
 - [ ] Application should provide notification manager access
 
 ### 4. Main Window Tests
