@@ -28,6 +28,7 @@ pkgdatadir = datadir / meson.project_name()
 
 subdir('src')
 subdir('data')
+subdir('tests')
 
 gnome.post_install(
   glib_compile_schemas: true,
