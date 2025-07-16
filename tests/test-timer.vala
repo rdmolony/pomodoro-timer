@@ -83,6 +83,32 @@ namespace PomodoroTimer.Tests {
         timer.stop ();
         assert (timer.get_remaining_seconds () <= 300);
     }
+    
+    static void test_timer_stops_when_reaching_zero_and_emits_finished_signal () {
+        var timer = new Timer ();
+        timer.set_duration (1); // 1 second for quick test
+        
+        bool finished_signal_received = false;
+        timer.finished.connect (() => {
+            finished_signal_received = true;
+        });
+        
+        timer.start ();
+        assert (timer.is_running () == true);
+        
+        // Wait for timer to finish (1 second + small buffer)
+        var main_loop = new MainLoop ();
+        Timeout.add (1500, () => {
+            main_loop.quit ();
+            return false;
+        });
+        main_loop.run ();
+        
+        // Timer should have stopped automatically
+        assert (timer.is_running () == false);
+        assert (timer.get_remaining_seconds () == 0);
+        assert (finished_signal_received == true);
+    }
 }
 
 void main (string[] args) {
@@ -96,6 +122,7 @@ void main (string[] args) {
     Test.add_func ("/timer/handles_pause_when_not_running", PomodoroTimer.Tests.test_timer_handles_pause_when_not_running);
     Test.add_func ("/timer/stops_correctly", PomodoroTimer.Tests.test_timer_stops_correctly);
     Test.add_func ("/timer/tracks_remaining_time_correctly", PomodoroTimer.Tests.test_timer_tracks_remaining_time_correctly);
+    Test.add_func ("/timer/stops_when_reaching_zero_and_emits_finished_signal", PomodoroTimer.Tests.test_timer_stops_when_reaching_zero_and_emits_finished_signal);
     
     Test.run ();
 }

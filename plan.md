@@ -9,7 +9,7 @@ This plan follows TDD methodology as outlined in CLAUDE.md. Each test should be 
 - [x] Timer should set duration correctly
 - [x] Timer should start and emit tick signals
 - [x] Timer should track remaining time correctly
-- [ ] Timer should stop when reaching zero and emit finished signal
+- [x] Timer should stop when reaching zero and emit finished signal
 - [x] Timer should pause and resume correctly
 - [x] Timer should handle multiple start calls gracefully
 - [x] Timer should handle pause when not running gracefully
