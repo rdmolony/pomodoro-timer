@@ -3,6 +3,10 @@ namespace PomodoroTimer {
         private Notify.Notification? current_notification;
         private Gtk.Application app;
         private GSound.Context? sound_context;
+        private Gtk.Window? main_window;
+        
+        public signal void eye_check_dialog_shown ();
+        public signal void eye_check_dialog_dismissed ();
         
         public NotificationManager (Gtk.Application application) {
             app = application;
@@ -13,6 +17,20 @@ namespace PomodoroTimer {
             } catch (Error e) {
                 warning ("Could not initialize sound context: %s", e.message);
             }
+        }
+        
+        public void set_main_window (Gtk.Window window) {
+            main_window = window;
+        }
+        
+        public void show_eye_check_dialog () {
+            eye_check_dialog_shown ();
+        }
+        
+        public void connect_eye_check_dialog_signals (EyeCheckDialog dialog) {
+            dialog.dismissed.connect (() => {
+                eye_check_dialog_dismissed ();
+            });
         }
         
         public void show_notification (string title, string body) {

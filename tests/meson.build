@@ -47,7 +47,7 @@ timer_test_exe = executable(
 # NotificationManager tests
 notification_manager_test_exe = executable(
   'notification-manager-tests',
-  files('test-notification-manager.vala') + [notification_manager_copy, application_copy, window_copy, timer_copy],
+  files('test-notification-manager.vala') + [notification_manager_copy, application_copy, window_copy, timer_copy, eye_check_dialog_copy],
   dependencies: [glib_dep, gobject_dep, gtk_dep, adwaita_dep, notify_dep, gsound_dep],
   install: false,
   build_by_default: false,
@@ -57,7 +57,7 @@ notification_manager_test_exe = executable(
 # Application tests
 application_test_exe = executable(
   'application-tests',
-  files('test-application.vala') + [application_copy, window_copy, timer_copy, notification_manager_copy],
+  files('test-application.vala') + [application_copy, window_copy, timer_copy, notification_manager_copy, eye_check_dialog_copy],
   dependencies: [glib_dep, gobject_dep, gtk_dep, adwaita_dep, notify_dep, gsound_dep],
   install: false,
   build_by_default: false,
@@ -67,7 +67,7 @@ application_test_exe = executable(
 # MainWindow tests
 main_window_test_exe = executable(
   'main-window-tests',
-  files('test-main-window.vala') + [application_copy, window_copy, timer_copy, notification_manager_copy],
+  files('test-main-window.vala') + [application_copy, window_copy, timer_copy, notification_manager_copy, eye_check_dialog_copy],
   dependencies: [glib_dep, gobject_dep, gtk_dep, adwaita_dep, notify_dep, gsound_dep],
   install: false,
   build_by_default: false,
@@ -87,7 +87,7 @@ eye_check_dialog_test_exe = executable(
 # Integration tests
 integration_test_exe = executable(
   'integration-tests',
-  files('test-integration.vala') + [application_copy, window_copy, timer_copy, notification_manager_copy],
+  files('test-integration.vala') + [application_copy, window_copy, timer_copy, notification_manager_copy, eye_check_dialog_copy],
   dependencies: [glib_dep, gobject_dep, gtk_dep, adwaita_dep, notify_dep, gsound_dep],
   install: false,
   build_by_default: false,

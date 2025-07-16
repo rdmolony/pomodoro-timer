@@ -11,8 +11,8 @@
 - [x] EyeCheckDialog should have proper CSS styling applied
 
 ### NotificationManager Integration Tests
-- [ ] NotificationManager should show full-screen eye check dialog instead of system notification
-- [ ] NotificationManager should handle eye check dialog dismissed signal
+- [x] NotificationManager should show full-screen eye check dialog instead of system notification
+- [x] NotificationManager should handle eye check dialog dismissed signal
 - [ ] NotificationManager should handle eye check dialog snoozed signal and schedule reminder
 - [ ] NotificationManager should pass main window reference to eye check dialog
 
