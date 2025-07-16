@@ -1,5 +1,8 @@
 # 🍅 GNOME Pomodoro Timer with 20-20-20 Rule
 
+> [!WARN]
+> This has been written entirely by `Claude` with minimal input from me
+
 A native GNOME application that combines the Pomodoro Technique with the 20-20-20 rule for eye health. Built with GTK4 and libadwaita for seamless GNOME integration.
 
 ## Features
