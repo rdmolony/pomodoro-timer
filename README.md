@@ -53,8 +53,21 @@ run-dev
 
 ## Installation
 
-### Method 1: NixOS Flake (Recommended)
+### Option A: Using Nix Package Manager (Recommended)
 
+Nix works on any Linux distribution and provides reproducible builds.
+
+#### Install Nix (if not already installed)
+```bash
+# Install Nix package manager
+curl -L https://nixos.org/nix/install | sh
+source ~/.nix-profile/etc/profile.d/nix.sh
+
+# Enable flakes (recommended)
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
+
+#### Method 1: NixOS Flake (NixOS users)
 Add to your NixOS configuration:
 
 ```nix
@@ -79,8 +92,7 @@ Add to your NixOS configuration:
 
 Then rebuild: `sudo nixos-rebuild switch --flake .`
 
-### Method 2: Home Manager Integration
-
+#### Method 2: Home Manager Integration
 Add to your home-manager configuration:
 
 ```nix
@@ -106,8 +118,7 @@ Add to your home-manager configuration:
 
 Then apply: `home-manager switch --flake .`
 
-### Method 3: Direct Installation
-
+#### Method 3: Direct Nix Installation (Any Linux)
 ```bash
 # Clone and install to user profile
 git clone https://github.com/user/pomodoro-timer
@@ -118,8 +129,7 @@ nix profile install ./result
 # The app will be available in your applications menu
 ```
 
-### Method 4: Temporary Run
-
+#### Method 4: Temporary Run (Any Linux)
 ```bash
 # Run without installing
 nix run github:user/pomodoro-timer
@@ -128,6 +138,114 @@ nix run github:user/pomodoro-timer
 git clone https://github.com/user/pomodoro-timer
 cd pomodoro-timer
 nix run
+```
+
+### Option B: Traditional Package Installation
+
+#### Ubuntu/Debian
+```bash
+# Install dependencies
+sudo apt update
+sudo apt install -y build-essential meson ninja-build valac pkg-config \
+  libgtk-4-dev libadwaita-1-dev libnotify-dev libgsound-dev \
+  libglib2.0-dev desktop-file-utils appstream-util
+
+# Clone and build
+git clone https://github.com/user/pomodoro-timer
+cd pomodoro-timer
+meson setup build
+ninja -C build
+
+# Install GSettings schema
+sudo cp data/com.github.user.PomodoroTimer.gschema.xml /usr/share/glib-2.0/schemas/
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+# Install desktop file
+sudo cp data/com.github.user.PomodoroTimer.desktop /usr/share/applications/
+sudo update-desktop-database
+
+# Install binary
+sudo cp build/src/pomodoro-timer /usr/local/bin/
+```
+
+#### Fedora/CentOS/RHEL
+```bash
+# Install dependencies
+sudo dnf install -y meson ninja-build vala gcc pkgconfig \
+  gtk4-devel libadwaita-devel libnotify-devel gsound-devel \
+  glib2-devel desktop-file-utils appstream-util
+
+# Clone and build
+git clone https://github.com/user/pomodoro-timer
+cd pomodoro-timer
+meson setup build
+ninja -C build
+
+# Install GSettings schema
+sudo cp data/com.github.user.PomodoroTimer.gschema.xml /usr/share/glib-2.0/schemas/
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+# Install desktop file
+sudo cp data/com.github.user.PomodoroTimer.desktop /usr/share/applications/
+sudo update-desktop-database
+
+# Install binary
+sudo cp build/src/pomodoro-timer /usr/local/bin/
+```
+
+#### Arch Linux
+```bash
+# Install dependencies
+sudo pacman -S meson ninja vala gcc pkgconf gtk4 libadwaita \
+  libnotify gsound glib2 desktop-file-utils appstream-glib
+
+# Clone and build
+git clone https://github.com/user/pomodoro-timer
+cd pomodoro-timer
+meson setup build
+ninja -C build
+
+# Install GSettings schema
+sudo cp data/com.github.user.PomodoroTimer.gschema.xml /usr/share/glib-2.0/schemas/
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+# Install desktop file
+sudo cp data/com.github.user.PomodoroTimer.desktop /usr/share/applications/
+sudo update-desktop-database
+
+# Install binary
+sudo cp build/src/pomodoro-timer /usr/local/bin/
+```
+
+#### OpenSUSE
+```bash
+# Install dependencies
+sudo zypper install -y meson ninja vala gcc pkgconfig \
+  gtk4-devel libadwaita-devel libnotify-devel gsound-devel \
+  glib2-devel desktop-file-utils appstream-util
+
+# Clone and build
+git clone https://github.com/user/pomodoro-timer
+cd pomodoro-timer
+meson setup build
+ninja -C build
+
+# Install GSettings schema
+sudo cp data/com.github.user.PomodoroTimer.gschema.xml /usr/share/glib-2.0/schemas/
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+# Install desktop file
+sudo cp data/com.github.user.PomodoroTimer.desktop /usr/share/applications/
+sudo update-desktop-database
+
+# Install binary
+sudo cp build/src/pomodoro-timer /usr/local/bin/
+```
+
+### Option C: Flatpak (Coming Soon)
+```bash
+# Install from Flathub (when available)
+flatpak install flathub com.github.user.PomodoroTimer
 ```
 
 ## Build Instructions
@@ -258,6 +376,8 @@ valgrind ./build/src/pomodoro-timer
 ## Troubleshooting
 
 ### "Settings schema not installed" Error
+
+#### For Nix users:
 ```bash
 # Make sure the schema is compiled
 mkdir -p ~/.local/share/glib-2.0/schemas
@@ -265,15 +385,85 @@ cp data/com.github.user.PomodoroTimer.gschema.xml ~/.local/share/glib-2.0/schema
 glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 ```
 
+#### For traditional installations:
+```bash
+# System-wide installation (recommended)
+sudo cp data/com.github.user.PomodoroTimer.gschema.xml /usr/share/glib-2.0/schemas/
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+```
+
 ### Notifications Not Working
-- Ensure you're running a GNOME session
+- Ensure you're running a GNOME session or compatible desktop
 - Check notification permissions in GNOME Settings
-- Verify libnotify is properly installed
+- Verify libnotify is properly installed:
+  ```bash
+  # Test notifications
+  notify-send "Test" "If you see this, notifications work"
+  ```
+
+### Missing Dependencies (Traditional Install)
+
+#### Ubuntu/Debian:
+```bash
+# If libadwaita is missing (older Ubuntu versions)
+sudo add-apt-repository ppa:gnome3-team/gnome3
+sudo apt update
+sudo apt install libadwaita-1-dev
+```
+
+#### Fedora:
+```bash
+# Enable RPM Fusion for additional packages
+sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+```
+
+#### Arch Linux:
+```bash
+# Update system first
+sudo pacman -Syu
+```
 
 ### Build Failures
-- Make sure you're in the nix development shell
-- Try cleaning: `rm -rf build && nix develop`
-- Check that all dependencies are available
+
+#### For Nix users:
+```bash
+# Make sure you're in the nix development shell
+nix develop
+# Try cleaning: 
+rm -rf build && nix develop
+# Check that all dependencies are available
+nix flake check
+```
+
+#### For traditional builds:
+```bash
+# Clean build directory
+rm -rf build
+meson setup build
+ninja -C build
+
+# Check dependencies
+pkg-config --exists gtk4 libadwaita-1 libnotify gsound
+```
+
+### Runtime Issues
+
+#### Application won't start:
+```bash
+# Check if schema is installed
+gsettings list-schemas | grep com.github.user.PomodoroTimer
+
+# Check desktop file
+desktop-file-validate data/com.github.user.PomodoroTimer.desktop
+```
+
+#### Sound not working:
+```bash
+# Test sound system
+pactl info  # Check if PulseAudio is running
+# or
+pipewire --version  # Check if PipeWire is running
+```
 
 ## Testing
 
