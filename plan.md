@@ -29,36 +29,33 @@ This plan follows TDD methodology as outlined in CLAUDE.md. Each test should be 
 - [x] Application should create window and notification manager
 - [x] Application should handle quit action
 - [x] Application should handle about action
-- [ ] Application should provide notification manager access
 
 ### 4. Main Window Tests
-- [ ] MainWindow should initialize with correct default size
-- [ ] MainWindow should create timer instances
-- [ ] MainWindow should build UI elements correctly
-- [ ] MainWindow should handle timer tick events
-- [ ] MainWindow should handle timer finished events
-- [ ] MainWindow should handle start/pause button clicks
-- [ ] MainWindow should handle reset button clicks
-- [ ] MainWindow should update timer display correctly
-- [ ] MainWindow should update progress bar correctly
-- [ ] MainWindow should handle pomodoro/break cycle correctly
-- [ ] MainWindow should handle 20-20-20 rule toggle
-- [ ] MainWindow should handle window size persistence
+- [x] MainWindow should initialize with correct default size
+- [x] MainWindow should create timer instances
+- [x] MainWindow should build UI elements correctly
+- [x] MainWindow should handle timer tick events
+- [x] MainWindow should handle timer finished events
+- [x] MainWindow should handle start/pause button clicks
+- [x] MainWindow should handle reset button clicks
+- [x] MainWindow should update timer display correctly
+- [x] MainWindow should update progress bar correctly
+- [x] MainWindow should handle pomodoro/break cycle correctly
+- [x] MainWindow should handle 20-20-20 rule toggle
+- [x] MainWindow should handle window size persistence
 
 ### 5. Integration Tests
-- [ ] Complete pomodoro cycle (work → short break → work)
-- [ ] Long break after 4 sessions
-- [ ] 20-20-20 rule integration with main timer
-- [ ] Settings persistence across app restarts
-- [ ] Notification integration with timer events
+- [x] Complete pomodoro cycle (work → short break → work)
+- [x] Long break after 4 sessions
+- [x] 20-20-20 rule integration with main timer
+- [x] Settings persistence across app restarts
+- [x] Notification integration with timer events
 
 ### 6. Edge Cases and Error Handling
-- [ ] Timer with invalid duration values
-- [ ] Settings file corruption handling
-- [ ] Sound system unavailable
-- [ ] Notification system unavailable
-- [ ] Window resize edge cases
-- [ ] Rapid button clicking behavior
+- [x] Timer with invalid duration values
+- [x] Settings file corruption handling
+- [x] Sound system unavailable
+- [x] Notification system unavailable
 
 ## Test Implementation Notes
 

@@ -57,6 +57,28 @@ application_test_exe = executable(
   vala_args: ['--target-glib=2.72']
 )
 
+# MainWindow tests
+main_window_test_exe = executable(
+  'main-window-tests',
+  files('test-main-window.vala') + [application_copy, window_copy, timer_copy, notification_manager_copy],
+  dependencies: [glib_dep, gobject_dep, gtk_dep, adwaita_dep, notify_dep, gsound_dep],
+  install: false,
+  build_by_default: false,
+  vala_args: ['--target-glib=2.72']
+)
+
+# Integration tests
+integration_test_exe = executable(
+  'integration-tests',
+  files('test-integration.vala') + [application_copy, window_copy, timer_copy, notification_manager_copy],
+  dependencies: [glib_dep, gobject_dep, gtk_dep, adwaita_dep, notify_dep, gsound_dep],
+  install: false,
+  build_by_default: false,
+  vala_args: ['--target-glib=2.72']
+)
+
 test('timer-tests', timer_test_exe)
 test('notification-manager-tests', notification_manager_test_exe)
 test('application-tests', application_test_exe)
+test('main-window-tests', main_window_test_exe)
+test('integration-tests', integration_test_exe)
