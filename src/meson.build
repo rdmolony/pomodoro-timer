@@ -3,7 +3,8 @@ sources = files(
   'application.vala',
   'window.vala',
   'timer.vala',
-  'notification-manager.vala'
+  'notification-manager.vala',
+  'eye-check-dialog.vala'
 )
 
 resources = gnome.compile_resources('pomodoro-timer-resources',

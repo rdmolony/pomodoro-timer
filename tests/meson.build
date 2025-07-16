@@ -27,6 +27,13 @@ window_copy = custom_target('copy-window',
   build_by_default: false
 )
 
+eye_check_dialog_copy = custom_target('copy-eye-check-dialog',
+  input: '../src/eye-check-dialog.vala',
+  output: 'eye-check-dialog.vala',
+  command: ['cp', '@INPUT@', '@OUTPUT@'],
+  build_by_default: false
+)
+
 # Timer tests
 timer_test_exe = executable(
   'timer-tests',
@@ -67,6 +74,16 @@ main_window_test_exe = executable(
   vala_args: ['--target-glib=2.72']
 )
 
+# EyeCheckDialog tests
+eye_check_dialog_test_exe = executable(
+  'eye-check-dialog-tests',
+  files('test-eye-check-dialog.vala') + [eye_check_dialog_copy],
+  dependencies: [glib_dep, gobject_dep, gtk_dep, adwaita_dep],
+  install: false,
+  build_by_default: false,
+  vala_args: ['--target-glib=2.72']
+)
+
 # Integration tests
 integration_test_exe = executable(
   'integration-tests',
@@ -81,4 +98,5 @@ test('timer-tests', timer_test_exe)
 test('notification-manager-tests', notification_manager_test_exe)
 test('application-tests', application_test_exe)
 test('main-window-tests', main_window_test_exe)
+test('eye-check-dialog-tests', eye_check_dialog_test_exe)
 test('integration-tests', integration_test_exe)
