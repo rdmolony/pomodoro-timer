@@ -227,4 +227,34 @@ mod tests {
         assert!(widgets.pause_button.is_some());
         assert!(widgets.reset_button.is_some());
     }
+
+    #[test]
+    fn timer_model_should_update_ui_when_state_changes() {
+        use crate::timer_model::{TimerModel, TimerMsg};
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let mut model = TimerModel::init();
+        let widgets = model.init_widgets();
+        
+        // Initial state should show 25:00
+        model.update_ui(&widgets);
+        let initial_text = widgets.time_label.as_ref().unwrap().text();
+        assert!(initial_text.contains("25:00"));
+        
+        // Start the timer - should still show 25:00
+        model.update(TimerMsg::Start);
+        model.update_ui(&widgets);
+        let running_text = widgets.time_label.as_ref().unwrap().text();
+        assert!(running_text.contains("25:00"));
+        
+        // Tick once - should show 24:59
+        model.update(TimerMsg::Tick);
+        model.update_ui(&widgets);
+        let ticked_text = widgets.time_label.as_ref().unwrap().text();
+        assert!(ticked_text.contains("24:59"));
+    }
 }

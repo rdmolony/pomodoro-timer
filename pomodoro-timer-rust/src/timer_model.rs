@@ -90,4 +90,18 @@ impl TimerModel {
             reset_button: Some(reset_button),
         }
     }
+    
+    pub fn update_ui(&self, widgets: &TimerWidgets) {
+        if let Some(label) = &widgets.time_label {
+            let remaining = self.get_remaining();
+            let time_str = Self::format_time(remaining);
+            label.set_markup(&format!("<span size='xx-large'>{}</span>", time_str));
+        }
+    }
+    
+    fn format_time(seconds: u32) -> String {
+        let minutes = seconds / 60;
+        let seconds = seconds % 60;
+        format!("{:02}:{:02}", minutes, seconds)
+    }
 }
