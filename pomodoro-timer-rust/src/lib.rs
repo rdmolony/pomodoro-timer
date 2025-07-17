@@ -40,4 +40,13 @@ mod tests {
         timer.start();
         assert!(timer.is_running());
     }
+
+    #[test]
+    fn timer_should_pause_countdown() {
+        let mut timer = Timer::new();
+        timer.set_duration(1500);
+        timer.start();
+        timer.pause();
+        assert!(!timer.is_running());
+    }
 }

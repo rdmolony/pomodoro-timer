@@ -37,4 +37,8 @@ impl Timer {
     pub fn is_running(&self) -> bool {
         self.running
     }
+
+    pub fn pause(&mut self) {
+        self.running = false;
+    }
 }

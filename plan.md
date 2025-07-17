@@ -46,7 +46,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Add start method and running state
 **Expected**: timer.start() changes state to running
 
-## Test 6: [ ] Timer should pause countdown
+## Test 6: [x] Timer should pause countdown
 **Focus**: Timer pause functionality
 **Implementation**: Add pause method
 **Expected**: timer.pause() changes state to paused
