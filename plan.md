@@ -56,7 +56,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Add reset method
 **Expected**: timer.reset() restores original duration
 
-## Test 8: [ ] Timer should emit tick events
+## Test 8: [x] Timer should emit tick events
 **Focus**: Timer tick signal/callback
 **Implementation**: Add tick event mechanism
 **Expected**: Running timer emits tick events with remaining time

@@ -59,4 +59,25 @@ mod tests {
         assert_eq!(timer.get_remaining(), 1500);
         assert!(!timer.is_running());
     }
+
+    #[test]
+    fn timer_should_emit_tick_events() {
+        use std::rc::Rc;
+        use std::cell::RefCell;
+        
+        let mut timer = Timer::new();
+        timer.set_duration(10);
+        
+        let tick_count = Rc::new(RefCell::new(0));
+        let tick_count_clone = tick_count.clone();
+        
+        timer.on_tick(move |remaining| {
+            *tick_count_clone.borrow_mut() += 1;
+            assert!(remaining < 10); // Should be less than original duration
+        });
+        
+        timer.start();
+        timer.tick(); // Simulate one tick
+        assert_eq!(*tick_count.borrow(), 1);
+    }
 }
