@@ -4,6 +4,7 @@ use crate::timer::Timer;
 pub enum TimerMsg {
     Start,
     Pause,
+    Reset,
 }
 
 pub struct TimerModel {
@@ -38,6 +39,10 @@ impl TimerModel {
             }
             TimerMsg::Pause => {
                 self.timer.pause();
+                None
+            }
+            TimerMsg::Reset => {
+                self.timer.reset();
                 None
             }
         }

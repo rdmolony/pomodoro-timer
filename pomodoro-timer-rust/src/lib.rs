@@ -160,4 +160,25 @@ mod tests {
         // Should not cause any side effects (no commands returned)
         assert!(result.is_none());
     }
+
+    #[test]
+    fn timer_model_should_handle_reset_message() {
+        use crate::timer_model::{TimerModel, TimerMsg};
+        
+        let mut model = TimerModel::init();
+        
+        // Start the timer and simulate some time passing
+        model.update(TimerMsg::Start);
+        assert!(model.is_running());
+        
+        // Process Reset message
+        let result = model.update(TimerMsg::Reset);
+        
+        // Timer should be reset to original duration and not running
+        assert_eq!(model.get_remaining(), 1500);
+        assert!(!model.is_running());
+        
+        // Should not cause any side effects (no commands returned)
+        assert!(result.is_none());
+    }
 }
