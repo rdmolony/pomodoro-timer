@@ -66,7 +66,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Add finished event mechanism
 **Expected**: Timer emits finished event when countdown reaches zero
 
-## Test 10: [ ] Timer should stop running when finished
+## Test 10: [x] Timer should stop running when finished
 **Focus**: Timer auto-stop on completion
 **Implementation**: Update timer state on finish
 **Expected**: Timer state becomes stopped when finished

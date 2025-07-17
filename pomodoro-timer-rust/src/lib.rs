@@ -1,4 +1,5 @@
 pub mod timer;
+mod timer_model;
 
 pub use timer::Timer;
 
@@ -110,5 +111,17 @@ mod tests {
         assert!(timer.is_running());
         timer.tick(); // This should finish the timer (1 -> 0)
         assert!(!timer.is_running());
+    }
+
+    #[test]
+    fn timer_model_should_initialize_with_default_state() {
+        use crate::timer_model::TimerModel;
+        
+        let model = TimerModel::init();
+        
+        // Should initialize with default pomodoro duration (25 minutes = 1500 seconds)
+        assert_eq!(model.get_duration(), 1500);
+        assert_eq!(model.get_remaining(), 1500);
+        assert!(!model.is_running());
     }
 }
