@@ -1,5 +1,10 @@
 use crate::timer::Timer;
 
+#[derive(Debug)]
+pub enum TimerMsg {
+    Start,
+}
+
 pub struct TimerModel {
     timer: Timer,
 }
@@ -22,5 +27,14 @@ impl TimerModel {
     
     pub fn is_running(&self) -> bool {
         self.timer.is_running()
+    }
+    
+    pub fn update(&mut self, msg: TimerMsg) -> Option<()> {
+        match msg {
+            TimerMsg::Start => {
+                self.timer.start();
+                None
+            }
+        }
     }
 }

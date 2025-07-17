@@ -124,4 +124,20 @@ mod tests {
         assert_eq!(model.get_remaining(), 1500);
         assert!(!model.is_running());
     }
+
+    #[test]
+    fn timer_model_should_handle_start_message() {
+        use crate::timer_model::{TimerModel, TimerMsg};
+        
+        let mut model = TimerModel::init();
+        
+        // Process Start message
+        let result = model.update(TimerMsg::Start);
+        
+        // Timer should now be running
+        assert!(model.is_running());
+        
+        // Should not cause any side effects (no commands returned)
+        assert!(result.is_none());
+    }
 }
