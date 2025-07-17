@@ -1,4 +1,6 @@
 use crate::timer::Timer;
+use relm4::prelude::*;
+use gtk::prelude::*;
 
 #[derive(Debug)]
 pub enum TimerMsg {
@@ -10,6 +12,14 @@ pub enum TimerMsg {
 
 pub struct TimerModel {
     timer: Timer,
+}
+
+pub struct TimerWidgets {
+    pub main_box: Option<gtk::Box>,
+    pub time_label: Option<gtk::Label>,
+    pub start_button: Option<gtk::Button>,
+    pub pause_button: Option<gtk::Button>,
+    pub reset_button: Option<gtk::Button>,
 }
 
 impl TimerModel {
@@ -50,6 +60,34 @@ impl TimerModel {
                 self.timer.tick();
                 None
             }
+        }
+    }
+    
+    pub fn init_widgets(&self) -> TimerWidgets {
+        let main_box = gtk::Box::new(gtk::Orientation::Vertical, 12);
+        
+        let time_label = gtk::Label::new(Some("25:00"));
+        time_label.set_markup("<span size='xx-large'>25:00</span>");
+        
+        let button_box = gtk::Box::new(gtk::Orientation::Horizontal, 6);
+        
+        let start_button = gtk::Button::with_label("Start");
+        let pause_button = gtk::Button::with_label("Pause");
+        let reset_button = gtk::Button::with_label("Reset");
+        
+        button_box.append(&start_button);
+        button_box.append(&pause_button);
+        button_box.append(&reset_button);
+        
+        main_box.append(&time_label);
+        main_box.append(&button_box);
+        
+        TimerWidgets {
+            main_box: Some(main_box),
+            time_label: Some(time_label),
+            start_button: Some(start_button),
+            pause_button: Some(pause_button),
+            reset_button: Some(reset_button),
         }
     }
 }

@@ -201,4 +201,30 @@ mod tests {
         // Should not cause any side effects (no commands returned)
         assert!(result.is_none());
     }
+
+    #[test]
+    fn timer_model_should_create_timer_display_ui() {
+        use crate::timer_model::TimerModel;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let model = TimerModel::init();
+        
+        // Create the widget tree
+        let widgets = model.init_widgets();
+        
+        // Should have a main container
+        assert!(widgets.main_box.is_some());
+        
+        // Should have a time display label
+        assert!(widgets.time_label.is_some());
+        
+        // Should have start, pause, and reset buttons
+        assert!(widgets.start_button.is_some());
+        assert!(widgets.pause_button.is_some());
+        assert!(widgets.reset_button.is_some());
+    }
 }
