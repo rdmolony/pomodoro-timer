@@ -31,7 +31,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Add set_duration method
 **Expected**: timer.set_duration(1500) sets duration to 1500 seconds
 
-## Test 3: [ ] Timer should report remaining time
+## Test 3: [x] Timer should report remaining time
 **Focus**: Time remaining getter
 **Implementation**: Add get_remaining method
 **Expected**: timer.get_remaining() returns current remaining time

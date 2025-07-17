@@ -18,4 +18,11 @@ mod tests {
         timer.set_duration(1500);
         assert_eq!(timer.get_duration(), 1500);
     }
+
+    #[test]
+    fn timer_should_report_remaining_time() {
+        let mut timer = Timer::new();
+        timer.set_duration(1500);
+        assert_eq!(timer.get_remaining(), 1500);
+    }
 }
