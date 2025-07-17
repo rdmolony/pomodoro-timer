@@ -5,6 +5,7 @@ pub enum TimerMsg {
     Start,
     Pause,
     Reset,
+    Tick,
 }
 
 pub struct TimerModel {
@@ -43,6 +44,10 @@ impl TimerModel {
             }
             TimerMsg::Reset => {
                 self.timer.reset();
+                None
+            }
+            TimerMsg::Tick => {
+                self.timer.tick();
                 None
             }
         }

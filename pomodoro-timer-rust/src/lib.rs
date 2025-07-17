@@ -181,4 +181,24 @@ mod tests {
         // Should not cause any side effects (no commands returned)
         assert!(result.is_none());
     }
+
+    #[test]
+    fn timer_model_should_handle_tick_message() {
+        use crate::timer_model::{TimerModel, TimerMsg};
+        
+        let mut model = TimerModel::init();
+        model.update(TimerMsg::Start);
+        
+        let initial_remaining = model.get_remaining();
+        
+        // Process Tick message
+        let result = model.update(TimerMsg::Tick);
+        
+        // Timer should have decremented by 1
+        assert_eq!(model.get_remaining(), initial_remaining - 1);
+        assert!(model.is_running());
+        
+        // Should not cause any side effects (no commands returned)
+        assert!(result.is_none());
+    }
 }
