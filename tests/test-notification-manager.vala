@@ -148,6 +148,55 @@ namespace PomodoroTimer.Tests {
         
         app.run ();
     }
+    
+    static void test_notification_manager_handles_eye_check_dialog_snoozed () {
+        var app = new Gtk.Application ("com.github.user.PomodoroTimer.test", ApplicationFlags.FLAGS_NONE);
+        app.activate.connect (() => {
+            var notification_manager = new NotificationManager (app);
+            var window = new Gtk.ApplicationWindow (app);
+            notification_manager.set_main_window (window);
+            
+            // Create an eye check dialog
+            var dialog = new EyeCheckDialog (window);
+            
+            // Test that notification manager handles snoozed signal
+            bool snoozed_handled = false;
+            notification_manager.eye_check_dialog_snoozed.connect (() => {
+                snoozed_handled = true;
+            });
+            
+            // Connect the dialog to the notification manager
+            notification_manager.connect_eye_check_dialog_signals (dialog);
+            
+            // Simulate snooze
+            dialog.simulate_snooze_click ();
+            
+            assert (snoozed_handled == true);
+            
+            app.quit ();
+        });
+        
+        app.run ();
+    }
+    
+    static void test_notification_manager_passes_main_window_reference_to_eye_check_dialog () {
+        var app = new Gtk.Application ("com.github.user.PomodoroTimer.test", ApplicationFlags.FLAGS_NONE);
+        app.activate.connect (() => {
+            var notification_manager = new NotificationManager (app);
+            var window = new Gtk.ApplicationWindow (app);
+            notification_manager.set_main_window (window);
+            
+            // Test that notification manager shows eye check dialog with main window reference
+            var dialog = notification_manager.create_eye_check_dialog ();
+            
+            assert (dialog != null);
+            assert (dialog.get_transient_for () == window);
+            
+            app.quit ();
+        });
+        
+        app.run ();
+    }
 }
 
 void main (string[] args) {
@@ -162,6 +211,8 @@ void main (string[] args) {
     Test.add_func ("/notification-manager/schedules_snooze_reminders_correctly", PomodoroTimer.Tests.test_notification_manager_schedules_snooze_reminders_correctly);
     Test.add_func ("/notification-manager/shows_eye_check_dialog", PomodoroTimer.Tests.test_notification_manager_shows_eye_check_dialog);
     Test.add_func ("/notification-manager/handles_eye_check_dialog_dismissed", PomodoroTimer.Tests.test_notification_manager_handles_eye_check_dialog_dismissed);
+    Test.add_func ("/notification-manager/handles_eye_check_dialog_snoozed", PomodoroTimer.Tests.test_notification_manager_handles_eye_check_dialog_snoozed);
+    Test.add_func ("/notification-manager/passes_main_window_reference_to_eye_check_dialog", PomodoroTimer.Tests.test_notification_manager_passes_main_window_reference_to_eye_check_dialog);
     
     Test.run ();
 }

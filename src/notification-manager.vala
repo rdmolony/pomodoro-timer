@@ -7,6 +7,7 @@ namespace PomodoroTimer {
         
         public signal void eye_check_dialog_shown ();
         public signal void eye_check_dialog_dismissed ();
+        public signal void eye_check_dialog_snoozed ();
         
         public NotificationManager (Gtk.Application application) {
             app = application;
@@ -27,9 +28,22 @@ namespace PomodoroTimer {
             eye_check_dialog_shown ();
         }
         
+        public EyeCheckDialog create_eye_check_dialog () {
+            if (main_window == null) {
+                warning ("Main window not set, cannot create eye check dialog");
+                return null;
+            }
+            
+            return new EyeCheckDialog (main_window);
+        }
+        
         public void connect_eye_check_dialog_signals (EyeCheckDialog dialog) {
             dialog.dismissed.connect (() => {
                 eye_check_dialog_dismissed ();
+            });
+            
+            dialog.snoozed.connect (() => {
+                eye_check_dialog_snoozed ();
             });
         }
         

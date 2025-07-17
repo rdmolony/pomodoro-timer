@@ -141,6 +141,41 @@ namespace PomodoroTimer.Tests {
         assert (Application.settings.get_int ("window-width") == 800);
         assert (Application.settings.get_int ("window-height") == 600);
     }
+    
+    static void test_main_window_has_manual_trigger_button_for_eye_check_dialog () {
+        var app = new Gtk.Application ("com.github.user.PomodoroTimer.test", ApplicationFlags.FLAGS_NONE);
+        app.activate.connect (() => {
+            var window = new MainWindow (app);
+            
+            // Test that window has a manual trigger button for eye check dialog
+            assert (window.has_manual_eye_check_button ());
+            
+            app.quit ();
+        });
+        
+        app.run ();
+    }
+    
+    static void test_manual_trigger_button_shows_eye_check_dialog_when_clicked () {
+        var app = new Gtk.Application ("com.github.user.PomodoroTimer.test", ApplicationFlags.FLAGS_NONE);
+        app.activate.connect (() => {
+            var window = new MainWindow (app);
+            
+            // Test that manual trigger button shows eye check dialog when clicked
+            bool dialog_shown = false;
+            window.eye_check_dialog_requested.connect (() => {
+                dialog_shown = true;
+            });
+            
+            window.trigger_manual_eye_check ();
+            
+            assert (dialog_shown == true);
+            
+            app.quit ();
+        });
+        
+        app.run ();
+    }
 }
 
 void main (string[] args) {
@@ -158,6 +193,8 @@ void main (string[] args) {
     Test.add_func ("/main-window/handles_pomodoro_break_cycle_correctly", PomodoroTimer.Tests.test_main_window_handles_pomodoro_break_cycle_correctly);
     Test.add_func ("/main-window/handles_20_20_20_rule_toggle", PomodoroTimer.Tests.test_main_window_handles_20_20_20_rule_toggle);
     Test.add_func ("/main-window/handles_window_size_persistence", PomodoroTimer.Tests.test_main_window_handles_window_size_persistence);
+    Test.add_func ("/main-window/has_manual_trigger_button_for_eye_check_dialog", PomodoroTimer.Tests.test_main_window_has_manual_trigger_button_for_eye_check_dialog);
+    Test.add_func ("/main-window/manual_trigger_button_shows_eye_check_dialog_when_clicked", PomodoroTimer.Tests.test_manual_trigger_button_shows_eye_check_dialog_when_clicked);
     
     Test.run ();
 }

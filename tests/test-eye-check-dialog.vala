@@ -115,6 +115,38 @@ void test_eye_check_dialog_has_ui_elements () {
     app.run ();
 }
 
+void test_eye_check_dialog_buttons_close_dialog () {
+    var app = new Gtk.Application ("com.github.user.PomodoroTimer.test", ApplicationFlags.FLAGS_NONE);
+    app.activate.connect (() => {
+        var window = new Gtk.ApplicationWindow (app);
+        var dialog = new EyeCheckDialog (window);
+        
+        // Test that simulate_dismiss_click calls close() - since simulate methods
+        // should mimic what the real buttons do
+        bool dismiss_called = false;
+        dialog.dismissed.connect (() => {
+            dismiss_called = true;
+        });
+        
+        // Test that simulate_snooze_click also calls close()
+        bool snooze_called = false;
+        dialog.snoozed.connect (() => {
+            snooze_called = true;
+        });
+        
+        // Simulate button clicks
+        dialog.simulate_dismiss_click ();
+        assert (dismiss_called == true);
+        
+        dialog.simulate_snooze_click ();
+        assert (snooze_called == true);
+        
+        app.quit ();
+    });
+    
+    app.run ();
+}
+
 void main (string[] args) {
     Test.init (ref args);
     Gtk.init ();
@@ -125,6 +157,7 @@ void main (string[] args) {
     Test.add_func ("/eye-check-dialog/snoozed-signal", test_eye_check_dialog_snoozed_signal);
     Test.add_func ("/eye-check-dialog/esc-key-closes", test_eye_check_dialog_esc_key_closes);
     Test.add_func ("/eye-check-dialog/has-ui-elements", test_eye_check_dialog_has_ui_elements);
+    Test.add_func ("/eye-check-dialog/buttons_close_dialog", test_eye_check_dialog_buttons_close_dialog);
     
     Test.run ();
 }

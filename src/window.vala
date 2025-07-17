@@ -1,5 +1,6 @@
 namespace PomodoroTimer {
     public class MainWindow : Adw.ApplicationWindow {
+        public signal void eye_check_dialog_requested ();
         private Gtk.Label timer_label;
         private Gtk.Button start_pause_button;
         private Gtk.Button reset_button;
@@ -7,6 +8,7 @@ namespace PomodoroTimer {
         private Gtk.Label session_label;
         private Gtk.Label next_20_20_20_label;
         private Gtk.Switch enable_20_20_20_switch;
+        private Gtk.Button manual_eye_check_button;
         
         private Timer timer;
         private Timer twenty_twenty_timer;
@@ -127,6 +129,16 @@ namespace PomodoroTimer {
             next_20_20_20_label = new Gtk.Label ("Next reminder in 20:00");
             next_20_20_20_label.add_css_class ("monospace");
             status_row.add_suffix (next_20_20_20_label);
+            
+            var manual_trigger_row = new Adw.ActionRow ();
+            manual_trigger_row.set_title ("Manual Trigger");
+            manual_trigger_row.set_subtitle ("Test the eye check dialog");
+            preferences_group.add (manual_trigger_row);
+            
+            manual_eye_check_button = new Gtk.Button.with_label ("Show Eye Check");
+            manual_eye_check_button.set_valign (Gtk.Align.CENTER);
+            manual_eye_check_button.add_css_class ("pill");
+            manual_trigger_row.add_suffix (manual_eye_check_button);
         }
         
         private void setup_signals () {
@@ -136,6 +148,7 @@ namespace PomodoroTimer {
             
             start_pause_button.clicked.connect (on_start_pause_clicked);
             reset_button.clicked.connect (on_reset_clicked);
+            manual_eye_check_button.clicked.connect (trigger_manual_eye_check);
             
             close_request.connect (() => {
                 var settings = Application.settings;
@@ -259,6 +272,26 @@ namespace PomodoroTimer {
             double remaining = timer.get_remaining_seconds ();
             double progress = (total - remaining) / total;
             progress_bar.fraction = progress;
+        }
+        
+        public bool has_manual_eye_check_button () {
+            return manual_eye_check_button != null;
+        }
+        
+        public void trigger_manual_eye_check () {
+            eye_check_dialog_requested ();
+            
+            if (application is Application) {
+                var app = (Application) application;
+                var notification_manager = app.get_notification_manager ();
+                notification_manager.set_main_window (this);
+                
+                var dialog = notification_manager.create_eye_check_dialog ();
+                if (dialog != null) {
+                    notification_manager.connect_eye_check_dialog_signals (dialog);
+                    dialog.present ();
+                }
+            }
         }
     }
 }

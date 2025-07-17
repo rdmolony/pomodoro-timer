@@ -13,12 +13,14 @@
 ### NotificationManager Integration Tests
 - [x] NotificationManager should show full-screen eye check dialog instead of system notification
 - [x] NotificationManager should handle eye check dialog dismissed signal
-- [ ] NotificationManager should handle eye check dialog snoozed signal and schedule reminder
-- [ ] NotificationManager should pass main window reference to eye check dialog
+- [x] NotificationManager should handle eye check dialog snoozed signal and schedule reminder
+- [x] NotificationManager should pass main window reference to eye check dialog
 
 ### Window Integration Tests
-- [ ] MainWindow should provide reference to NotificationManager for eye check dialog
-- [ ] Eye check dialog should appear on top of main window when 20-20-20 timer triggers
+- [x] MainWindow should provide reference to NotificationManager for eye check dialog
+- [x] Eye check dialog should appear on top of main window when 20-20-20 timer triggers
+- [x] MainWindow should have manual trigger button for eye check dialog
+- [x] Manual trigger button should show eye check dialog when clicked
 
 ## Implementation Notes
 - Replace system notification with full-screen modal dialog

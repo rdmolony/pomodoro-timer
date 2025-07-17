@@ -52,18 +52,41 @@ namespace PomodoroTimer {
             snooze_button.set_size_request (200, 48);
             snooze_button.add_css_class ("pill");
             button_box.append (snooze_button);
+            
+            // Connect button signals to use the same logic as simulate methods
+            dismiss_button.clicked.connect (() => {
+                simulate_dismiss_click ();
+            });
+            
+            snooze_button.clicked.connect (() => {
+                simulate_snooze_click ();
+            });
+            
+            // Connect ESC key to dismiss (using the same logic as simulate_esc_key)
+            var key_controller = new Gtk.EventControllerKey ();
+            key_controller.key_pressed.connect ((keyval, keycode, state) => {
+                if (keyval == Gdk.Key.Escape) {
+                    simulate_esc_key ();
+                    return true;
+                }
+                return false;
+            });
+            ((Gtk.Widget) this).add_controller (key_controller);
         }
         
         public void simulate_dismiss_click () {
             dismissed ();
+            close ();
         }
         
         public void simulate_snooze_click () {
             snoozed ();
+            close ();
         }
         
         public void simulate_esc_key () {
             dismissed ();
+            close ();
         }
         
         public bool has_title_label () {
