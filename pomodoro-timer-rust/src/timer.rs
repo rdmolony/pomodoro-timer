@@ -23,4 +23,8 @@ impl Timer {
     pub fn get_remaining(&self) -> u32 {
         self.remaining
     }
+
+    pub fn get_total_duration(&self) -> u32 {
+        self.duration
+    }
 }

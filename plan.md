@@ -36,7 +36,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Add get_remaining method
 **Expected**: timer.get_remaining() returns current remaining time
 
-## Test 4: [ ] Timer should report total duration
+## Test 4: [x] Timer should report total duration
 **Focus**: Total duration getter
 **Implementation**: Add get_total_duration method
 **Expected**: timer.get_total_duration() returns original duration
