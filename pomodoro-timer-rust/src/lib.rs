@@ -11,4 +11,11 @@ mod tests {
         let timer = Timer::new();
         assert_eq!(timer.get_duration(), 0);
     }
+
+    #[test]
+    fn timer_should_set_duration_correctly() {
+        let mut timer = Timer::new();
+        timer.set_duration(1500);
+        assert_eq!(timer.get_duration(), 1500);
+    }
 }

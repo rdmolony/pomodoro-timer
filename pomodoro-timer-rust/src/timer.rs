@@ -10,4 +10,8 @@ impl Timer {
     pub fn get_duration(&self) -> u32 {
         self.duration
     }
+
+    pub fn set_duration(&mut self, duration: u32) {
+        self.duration = duration;
+    }
 }

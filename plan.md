@@ -26,7 +26,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Create Timer struct with duration field
 **Expected**: Timer::new() creates timer with 0 duration
 
-## Test 2: [ ] Timer should set duration correctly
+## Test 2: [x] Timer should set duration correctly
 **Focus**: Duration setting functionality
 **Implementation**: Add set_duration method
 **Expected**: timer.set_duration(1500) sets duration to 1500 seconds
