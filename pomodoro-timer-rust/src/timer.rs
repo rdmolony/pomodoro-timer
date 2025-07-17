@@ -41,4 +41,9 @@ impl Timer {
     pub fn pause(&mut self) {
         self.running = false;
     }
+
+    pub fn reset(&mut self) {
+        self.remaining = self.duration;
+        self.running = false;
+    }
 }

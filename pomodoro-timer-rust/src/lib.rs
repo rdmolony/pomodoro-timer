@@ -49,4 +49,14 @@ mod tests {
         timer.pause();
         assert!(!timer.is_running());
     }
+
+    #[test]
+    fn timer_should_reset_to_original_duration() {
+        let mut timer = Timer::new();
+        timer.set_duration(1500);
+        timer.start();
+        timer.reset();
+        assert_eq!(timer.get_remaining(), 1500);
+        assert!(!timer.is_running());
+    }
 }

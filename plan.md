@@ -51,7 +51,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Add pause method
 **Expected**: timer.pause() changes state to paused
 
-## Test 7: [ ] Timer should reset to original duration
+## Test 7: [x] Timer should reset to original duration
 **Focus**: Timer reset functionality
 **Implementation**: Add reset method
 **Expected**: timer.reset() restores original duration
