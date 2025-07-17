@@ -41,7 +41,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Add get_total_duration method
 **Expected**: timer.get_total_duration() returns original duration
 
-## Test 5: [ ] Timer should start countdown
+## Test 5: [x] Timer should start countdown
 **Focus**: Timer start functionality
 **Implementation**: Add start method and running state
 **Expected**: timer.start() changes state to running

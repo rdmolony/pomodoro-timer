@@ -1,6 +1,7 @@
 pub struct Timer {
     duration: u32,
     remaining: u32,
+    running: bool,
 }
 
 impl Timer {
@@ -8,6 +9,7 @@ impl Timer {
         Self { 
             duration: 0,
             remaining: 0,
+            running: false,
         }
     }
 
@@ -26,5 +28,13 @@ impl Timer {
 
     pub fn get_total_duration(&self) -> u32 {
         self.duration
+    }
+
+    pub fn start(&mut self) {
+        self.running = true;
+    }
+
+    pub fn is_running(&self) -> bool {
+        self.running
     }
 }
