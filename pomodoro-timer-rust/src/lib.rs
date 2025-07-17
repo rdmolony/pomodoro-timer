@@ -80,4 +80,24 @@ mod tests {
         timer.tick(); // Simulate one tick
         assert_eq!(*tick_count.borrow(), 1);
     }
+
+    #[test]
+    fn timer_should_emit_finished_event_when_complete() {
+        use std::rc::Rc;
+        use std::cell::RefCell;
+        
+        let mut timer = Timer::new();
+        timer.set_duration(1);
+        
+        let finished_called = Rc::new(RefCell::new(false));
+        let finished_called_clone = finished_called.clone();
+        
+        timer.on_finished(move || {
+            *finished_called_clone.borrow_mut() = true;
+        });
+        
+        timer.start();
+        timer.tick(); // This should finish the timer (1 -> 0)
+        assert!(*finished_called.borrow());
+    }
 }

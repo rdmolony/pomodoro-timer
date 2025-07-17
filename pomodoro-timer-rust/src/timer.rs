@@ -3,6 +3,7 @@ pub struct Timer {
     remaining: u32,
     running: bool,
     tick_callback: Option<Box<dyn FnMut(u32)>>,
+    finished_callback: Option<Box<dyn FnMut()>>,
 }
 
 impl Timer {
@@ -12,6 +13,7 @@ impl Timer {
             remaining: 0,
             running: false,
             tick_callback: None,
+            finished_callback: None,
         }
     }
 
@@ -62,6 +64,18 @@ impl Timer {
             if let Some(callback) = &mut self.tick_callback {
                 callback(self.remaining);
             }
+            if self.remaining == 0 {
+                if let Some(callback) = &mut self.finished_callback {
+                    callback();
+                }
+            }
         }
+    }
+
+    pub fn on_finished<F>(&mut self, callback: F)
+    where
+        F: FnMut() + 'static,
+    {
+        self.finished_callback = Some(Box::new(callback));
     }
 }
