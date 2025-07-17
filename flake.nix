@@ -34,6 +34,26 @@
           desktop-file-utils
           appstream-glib
         ];
+        
+        # Rust development dependencies
+        rustBuildInputs = with pkgs; [
+          gtk4
+          libadwaita
+          glib
+          gobject-introspection
+          pkg-config
+          libnotify
+          gsound
+        ];
+        
+        rustNativeBuildInputs = with pkgs; [
+          rustc
+          cargo
+          rustfmt
+          clippy
+          pkg-config
+          wrapGAppsHook4
+        ];
 
         pomodoro-timer = pkgs.stdenv.mkDerivation {
           pname = "pomodoro-timer";
@@ -112,7 +132,7 @@
         };
         
         devShells.default = pkgs.mkShell {
-          buildInputs = buildInputs ++ nativeBuildInputs ++ [
+          buildInputs = buildInputs ++ nativeBuildInputs ++ rustBuildInputs ++ rustNativeBuildInputs ++ [
             build-dev
             run-dev
           ] ++ (with pkgs; [
@@ -127,12 +147,17 @@
             export GTK_THEME=Adwaita:dark
             echo "🍅 GNOME Pomodoro Timer with 20-20-20 Rule"
             echo ""
-            echo "Quick start:"
+            echo "Vala/GTK (current):"
             echo "  build-dev    - Build the application"
             echo "  run-dev      - Build and run the application"
             echo "  nix run      - Run directly with nix"
             echo ""
-            echo "Manual build:"
+            echo "Rust/Relm4 (development):"
+            echo "  cargo new pomodoro-timer-rust --lib"
+            echo "  cargo test   - Run tests"
+            echo "  cargo build  - Build Rust version"
+            echo ""
+            echo "Manual build (Vala):"
             echo "  meson setup build && ninja -C build"
             echo "  ./build/src/pomodoro-timer"
           '';
