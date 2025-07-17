@@ -100,4 +100,15 @@ mod tests {
         timer.tick(); // This should finish the timer (1 -> 0)
         assert!(*finished_called.borrow());
     }
+
+    #[test]
+    fn timer_should_stop_running_when_finished() {
+        let mut timer = Timer::new();
+        timer.set_duration(1);
+        timer.start();
+        
+        assert!(timer.is_running());
+        timer.tick(); // This should finish the timer (1 -> 0)
+        assert!(!timer.is_running());
+    }
 }

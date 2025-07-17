@@ -65,6 +65,7 @@ impl Timer {
                 callback(self.remaining);
             }
             if self.remaining == 0 {
+                self.running = false;
                 if let Some(callback) = &mut self.finished_callback {
                     callback();
                 }
