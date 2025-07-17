@@ -140,4 +140,24 @@ mod tests {
         // Should not cause any side effects (no commands returned)
         assert!(result.is_none());
     }
+
+    #[test]
+    fn timer_model_should_handle_pause_message() {
+        use crate::timer_model::{TimerModel, TimerMsg};
+        
+        let mut model = TimerModel::init();
+        
+        // Start the timer first
+        model.update(TimerMsg::Start);
+        assert!(model.is_running());
+        
+        // Process Pause message
+        let result = model.update(TimerMsg::Pause);
+        
+        // Timer should now be paused
+        assert!(!model.is_running());
+        
+        // Should not cause any side effects (no commands returned)
+        assert!(result.is_none());
+    }
 }

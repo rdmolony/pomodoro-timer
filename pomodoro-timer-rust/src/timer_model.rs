@@ -3,6 +3,7 @@ use crate::timer::Timer;
 #[derive(Debug)]
 pub enum TimerMsg {
     Start,
+    Pause,
 }
 
 pub struct TimerModel {
@@ -33,6 +34,10 @@ impl TimerModel {
         match msg {
             TimerMsg::Start => {
                 self.timer.start();
+                None
+            }
+            TimerMsg::Pause => {
+                self.timer.pause();
                 None
             }
         }
