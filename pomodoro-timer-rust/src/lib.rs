@@ -257,4 +257,44 @@ mod tests {
         let ticked_text = widgets.time_label.as_ref().unwrap().text();
         assert!(ticked_text.contains("24:59"));
     }
+
+    #[test]
+    fn timer_model_should_handle_button_clicks() {
+        use crate::timer_model::{TimerModel, TimerMsg};
+        use std::rc::Rc;
+        use std::cell::RefCell;
+        use gtk::prelude::ButtonExt;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let model = TimerModel::init();
+        let widgets = model.init_widgets();
+        
+        // Create a shared state to capture messages
+        let messages = Rc::new(RefCell::new(Vec::new()));
+        
+        // Connect button signals
+        model.connect_signals(&widgets, messages.clone());
+        
+        // Simulate button clicks
+        if let Some(start_button) = &widgets.start_button {
+            start_button.emit_clicked();
+        }
+        
+        // Check that Start message was captured
+        assert_eq!(messages.borrow().len(), 1);
+        assert!(matches!(messages.borrow()[0], TimerMsg::Start));
+        
+        // Clear messages and test pause button
+        messages.borrow_mut().clear();
+        if let Some(pause_button) = &widgets.pause_button {
+            pause_button.emit_clicked();
+        }
+        
+        assert_eq!(messages.borrow().len(), 1);
+        assert!(matches!(messages.borrow()[0], TimerMsg::Pause));
+    }
 }

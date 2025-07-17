@@ -1,8 +1,10 @@
 use crate::timer::Timer;
 use relm4::prelude::*;
 use gtk::prelude::*;
+use std::rc::Rc;
+use std::cell::RefCell;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum TimerMsg {
     Start,
     Pause,
@@ -103,5 +105,28 @@ impl TimerModel {
         let minutes = seconds / 60;
         let seconds = seconds % 60;
         format!("{:02}:{:02}", minutes, seconds)
+    }
+    
+    pub fn connect_signals(&self, widgets: &TimerWidgets, messages: Rc<RefCell<Vec<TimerMsg>>>) {
+        if let Some(start_button) = &widgets.start_button {
+            let messages_clone = messages.clone();
+            start_button.connect_clicked(move |_| {
+                messages_clone.borrow_mut().push(TimerMsg::Start);
+            });
+        }
+        
+        if let Some(pause_button) = &widgets.pause_button {
+            let messages_clone = messages.clone();
+            pause_button.connect_clicked(move |_| {
+                messages_clone.borrow_mut().push(TimerMsg::Pause);
+            });
+        }
+        
+        if let Some(reset_button) = &widgets.reset_button {
+            let messages_clone = messages.clone();
+            reset_button.connect_clicked(move |_| {
+                messages_clone.borrow_mut().push(TimerMsg::Reset);
+            });
+        }
     }
 }
