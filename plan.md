@@ -233,6 +233,16 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Implement proper Component trait with init/update/view
 **Expected**: Component responds to messages and updates UI
 
+## Test 41: [x] MainApp should properly display timer UI in window
+**Focus**: Window content display
+**Implementation**: Ensure timer widgets are properly added to window
+**Expected**: Window shows timer display with buttons and time
+
+## Test 42: [ ] MainApp should connect timer button interactions
+**Focus**: UI interaction handling
+**Implementation**: Connect button clicks to timer messages
+**Expected**: Start/Pause/Reset buttons work with timer functionality
+
 ## Expected Cargo.toml Dependencies
 ```toml
 [package]

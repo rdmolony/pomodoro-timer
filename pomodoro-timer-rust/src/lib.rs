@@ -1015,4 +1015,48 @@ mod tests {
         assert!(app.is_initialized());
         assert_eq!(app.get_app_id(), "com.example.pomodoro-timer");
     }
+
+    #[test]
+    fn main_app_should_properly_display_timer_ui_in_window() {
+        use crate::MainApp;
+        use gtk::prelude::*;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        // Create a test window
+        let window = gtk::ApplicationWindow::new(&gtk::Application::new(
+            Some("com.example.test"),
+            Default::default(),
+        ));
+        
+        // Create MainApp and initialize it
+        let app = MainApp::new(());
+        
+        // Test that MainApp can set up the window properly
+        let setup_result = app.setup_window_content(&window);
+        assert!(setup_result.is_ok());
+        
+        // Verify that the window has content
+        assert!(window.child().is_some());
+        
+        // Verify that the window has a titlebar
+        assert!(window.titlebar().is_some());
+        
+        // Verify window properties
+        assert_eq!(window.title(), Some("Pomodoro Timer".into()));
+        assert_eq!(window.default_size(), (400, 300));
+        
+        // Verify that timer widgets are accessible
+        let timer_widgets = app.get_timer_widgets();
+        assert!(timer_widgets.is_some());
+        
+        let widgets = timer_widgets.unwrap();
+        assert!(widgets.time_label.is_some());
+        assert!(widgets.start_button.is_some());
+        assert!(widgets.pause_button.is_some());
+        assert!(widgets.reset_button.is_some());
+    }
 }
