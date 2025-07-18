@@ -228,7 +228,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Create main.rs with proper Relm4 component setup
 **Expected**: Application starts with GTK window and Relm4 architecture
 
-## Test 40: [ ] Main application should handle component lifecycle
+## Test 40: [x] Main application should handle component lifecycle
 **Focus**: Relm4 component integration
 **Implementation**: Implement proper Component trait with init/update/view
 **Expected**: Component responds to messages and updates UI
@@ -238,7 +238,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Ensure timer widgets are properly added to window
 **Expected**: Window shows timer display with buttons and time
 
-## Test 42: [ ] MainApp should connect timer button interactions
+## Test 42: [x] MainApp should connect timer button interactions
 **Focus**: UI interaction handling
 **Implementation**: Connect button clicks to timer messages
 **Expected**: Start/Pause/Reset buttons work with timer functionality

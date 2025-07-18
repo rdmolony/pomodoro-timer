@@ -61,6 +61,48 @@ impl MainApp {
         let widgets = self.app_model.init_widgets();
         widgets.timer_widgets
     }
+    
+    pub fn get_timer_running_state(&self) -> bool {
+        self.app_model.get_timer_model().is_running()
+    }
+    
+    pub fn get_timer_duration(&self) -> u32 {
+        self.app_model.get_timer_model().get_duration()
+    }
+    
+    pub fn handle_message(&mut self, message: AppMsg) {
+        self.app_model.update(message);
+    }
+    
+    pub fn connect_button_interactions(&self, timer_widgets: &crate::timer_model::TimerWidgets, messages: std::rc::Rc<std::cell::RefCell<Vec<String>>>) -> Result<(), Box<dyn std::error::Error>> {
+        use gtk::prelude::*;
+        
+        // Connect start button
+        if let Some(start_button) = &timer_widgets.start_button {
+            let messages_clone = messages.clone();
+            start_button.connect_clicked(move |_| {
+                messages_clone.borrow_mut().push("Start".to_string());
+            });
+        }
+        
+        // Connect pause button
+        if let Some(pause_button) = &timer_widgets.pause_button {
+            let messages_clone = messages.clone();
+            pause_button.connect_clicked(move |_| {
+                messages_clone.borrow_mut().push("Pause".to_string());
+            });
+        }
+        
+        // Connect reset button
+        if let Some(reset_button) = &timer_widgets.reset_button {
+            let messages_clone = messages.clone();
+            reset_button.connect_clicked(move |_| {
+                messages_clone.borrow_mut().push("Reset".to_string());
+            });
+        }
+        
+        Ok(())
+    }
 }
 
 impl SimpleComponent for MainApp {

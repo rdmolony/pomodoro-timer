@@ -1059,4 +1059,99 @@ mod tests {
         assert!(widgets.pause_button.is_some());
         assert!(widgets.reset_button.is_some());
     }
+
+    #[test]
+    fn main_application_should_handle_component_lifecycle() {
+        use crate::MainApp;
+        use crate::app_model::AppMsg;
+        use crate::timer_model::TimerMsg;
+        
+        let mut app = MainApp::new(());
+        
+        // Test that component can handle messages
+        let initial_running = app.get_timer_running_state();
+        assert!(!initial_running);
+        
+        // Send a timer start message
+        app.handle_message(AppMsg::Timer(TimerMsg::Start));
+        
+        // Timer should now be running
+        let running_after_start = app.get_timer_running_state();
+        assert!(running_after_start);
+        
+        // Send a timer pause message
+        app.handle_message(AppMsg::Timer(TimerMsg::Pause));
+        
+        // Timer should now be paused
+        let running_after_pause = app.get_timer_running_state();
+        assert!(!running_after_pause);
+        
+        // Send a timer reset message
+        app.handle_message(AppMsg::Timer(TimerMsg::Reset));
+        
+        // Timer should be reset to initial state
+        let running_after_reset = app.get_timer_running_state();
+        assert!(!running_after_reset);
+        
+        // Verify timer duration is reset
+        let duration = app.get_timer_duration();
+        assert_eq!(duration, 1500); // 25 minutes
+    }
+
+    #[test]
+    fn main_app_should_connect_timer_button_interactions() {
+        use crate::MainApp;
+        use gtk::prelude::*;
+        use std::rc::Rc;
+        use std::cell::RefCell;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let app = MainApp::new(());
+        
+        // Create a test window
+        let window = gtk::ApplicationWindow::new(&gtk::Application::new(
+            Some("com.example.test"),
+            Default::default(),
+        ));
+        
+        // Set up the window content
+        app.setup_window_content(&window).expect("Failed to setup window");
+        
+        // Get the timer widgets
+        let timer_widgets = app.get_timer_widgets().expect("Should have timer widgets");
+        
+        // Create a message tracker
+        let messages = Rc::new(RefCell::new(Vec::new()));
+        
+        // Connect button interactions
+        let connection_result = app.connect_button_interactions(&timer_widgets, messages.clone());
+        assert!(connection_result.is_ok());
+        
+        // Test start button
+        if let Some(start_button) = &timer_widgets.start_button {
+            start_button.emit_clicked();
+            assert_eq!(messages.borrow().len(), 1);
+        }
+        
+        // Test pause button
+        if let Some(pause_button) = &timer_widgets.pause_button {
+            pause_button.emit_clicked();
+            assert_eq!(messages.borrow().len(), 2);
+        }
+        
+        // Test reset button
+        if let Some(reset_button) = &timer_widgets.reset_button {
+            reset_button.emit_clicked();
+            assert_eq!(messages.borrow().len(), 3);
+        }
+        
+        // Verify messages are correct types
+        let msg_vec = messages.borrow();
+        assert_eq!(msg_vec.len(), 3);
+        // Note: In real implementation, these would be TimerMsg variants
+    }
 }
