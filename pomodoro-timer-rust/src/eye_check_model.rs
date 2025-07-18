@@ -1,5 +1,7 @@
 use relm4::prelude::*;
 use gtk::prelude::*;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum EyeCheckMsg {
@@ -81,6 +83,26 @@ impl EyeCheckModel {
             message_label: Some(message_label),
             dismiss_button: Some(dismiss_button),
             snooze_button: Some(snooze_button),
+        }
+    }
+    
+    pub fn connect_key_events(&self, widgets: &EyeCheckWidgets, messages: Rc<RefCell<Vec<EyeCheckMsg>>>) {
+        if let Some(window) = &widgets.window {
+            let messages_clone = messages.clone();
+            
+            // Create a key event controller
+            let key_controller = gtk::EventControllerKey::new();
+            
+            key_controller.connect_key_pressed(move |_, key, _, _| {
+                if key == gtk::gdk::Key::Escape {
+                    messages_clone.borrow_mut().push(EyeCheckMsg::Dismiss);
+                    gtk::glib::Propagation::Stop
+                } else {
+                    gtk::glib::Propagation::Proceed
+                }
+            });
+            
+            window.add_controller(key_controller);
         }
     }
 }

@@ -125,7 +125,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Handle EyeCheckMsg::Show in update
 **Expected**: Show message makes dialog visible
 
-## Test 21: [ ] EyeCheckModel should create fullscreen dialog UI
+## Test 21: [x] EyeCheckModel should create fullscreen dialog UI
 **Focus**: Eye check dialog UI creation
 **Implementation**: Create view method for fullscreen dialog
 **Expected**: view() returns fullscreen dialog with proper layout
