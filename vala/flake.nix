@@ -1,5 +1,5 @@
 {
-  description = "GNOME Pomodoro Timer with 20-20-20 Rule";
+  description = "Pomodoro Timer - Vala/GTK4 Implementation";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -34,29 +34,9 @@
           desktop-file-utils
           appstream-glib
         ];
-        
-        # Rust development dependencies
-        rustBuildInputs = with pkgs; [
-          gtk4
-          libadwaita
-          glib
-          gobject-introspection
-          pkg-config
-          libnotify
-          gsound
-        ];
-        
-        rustNativeBuildInputs = with pkgs; [
-          rustc
-          cargo
-          rustfmt
-          clippy
-          pkg-config
-          wrapGAppsHook4
-        ];
 
-        pomodoro-timer = pkgs.stdenv.mkDerivation {
-          pname = "pomodoro-timer";
+        pomodoro-timer-vala = pkgs.stdenv.mkDerivation {
+          pname = "pomodoro-timer-vala";
           version = "1.0.0";
           
           src = ./.;
@@ -71,8 +51,7 @@
           '';
           
           meta = with pkgs.lib; {
-            description = "GNOME Pomodoro Timer with 20-20-20 Rule";
-            homepage = "https://github.com/user/pomodoro-timer";
+            description = "Pomodoro Timer built with Vala and GTK4";
             license = licenses.gpl3Plus;
             platforms = platforms.linux;
             maintainers = [];
@@ -80,9 +59,9 @@
         };
 
         # Development build script
-        build-dev = pkgs.writeShellScriptBin "build-dev" ''
+        build-vala = pkgs.writeShellScriptBin "build-vala" ''
           set -e
-          echo "Building Pomodoro Timer..."
+          echo "🍅 Building Vala/GTK4 implementation..."
           
           # Setup build directory
           meson setup build --wipe 2>/dev/null || meson setup build
@@ -95,46 +74,62 @@
           cp data/com.github.user.PomodoroTimer.gschema.xml ~/.local/share/glib-2.0/schemas/
           glib-compile-schemas ~/.local/share/glib-2.0/schemas/
           
-          echo "Build complete! Run with: ./build/src/pomodoro-timer"
+          echo "✅ Vala build complete! Run with: ./build/src/pomodoro-timer"
         '';
         
         # Run script
-        run-dev = pkgs.writeShellScriptBin "run-dev" ''
+        run-vala = pkgs.writeShellScriptBin "run-vala" ''
           set -e
           if [ ! -f "./build/src/pomodoro-timer" ]; then
             echo "Application not built. Building first..."
-            build-dev
+            build-vala
           fi
           
-          echo "Starting Pomodoro Timer..."
+          echo "🚀 Starting Vala Pomodoro Timer..."
           ./build/src/pomodoro-timer
+        '';
+
+        # Test script
+        test-vala = pkgs.writeShellScriptBin "test-vala" ''
+          set -e
+          echo "🧪 Running Vala tests..."
+          if [ ! -d "build" ]; then
+            echo "Building first..."
+            build-vala
+          fi
+          meson test -C build
         '';
 
       in {
         packages = {
-          default = pomodoro-timer;
-          pomodoro-timer = pomodoro-timer;
+          default = pomodoro-timer-vala;
+          pomodoro-timer-vala = pomodoro-timer-vala;
         };
         
         apps = {
           default = {
             type = "app";
-            program = "${run-dev}/bin/run-dev";
+            program = "${run-vala}/bin/run-vala";
           };
           build = {
             type = "app";
-            program = "${build-dev}/bin/build-dev";
+            program = "${build-vala}/bin/build-vala";
           };
           run = {
             type = "app";
-            program = "${run-dev}/bin/run-dev";
+            program = "${run-vala}/bin/run-vala";
+          };
+          test = {
+            type = "app";
+            program = "${test-vala}/bin/test-vala";
           };
         };
         
         devShells.default = pkgs.mkShell {
-          buildInputs = buildInputs ++ nativeBuildInputs ++ rustBuildInputs ++ rustNativeBuildInputs ++ [
-            build-dev
-            run-dev
+          buildInputs = buildInputs ++ nativeBuildInputs ++ [
+            build-vala
+            run-vala
+            test-vala
           ] ++ (with pkgs; [
             gdb
             valgrind
@@ -145,19 +140,16 @@
           shellHook = ''
             export GSK_RENDERER=gl
             export GTK_THEME=Adwaita:dark
-            echo "🍅 GNOME Pomodoro Timer with 20-20-20 Rule"
+            echo "🍅 Pomodoro Timer - Vala/GTK4 Implementation"
+            echo "=============================================="
             echo ""
-            echo "Vala/GTK (current):"
-            echo "  build-dev    - Build the application"
-            echo "  run-dev      - Build and run the application"
+            echo "Available commands:"
+            echo "  build-vala   - Build the Vala application"
+            echo "  run-vala     - Build and run the Vala application"
+            echo "  test-vala    - Run Vala tests"
             echo "  nix run      - Run directly with nix"
             echo ""
-            echo "Rust/Relm4 (development):"
-            echo "  cargo new pomodoro-timer-rust --lib"
-            echo "  cargo test   - Run tests"
-            echo "  cargo build  - Build Rust version"
-            echo ""
-            echo "Manual build (Vala):"
+            echo "Manual build:"
             echo "  meson setup build && ninja -C build"
             echo "  ./build/src/pomodoro-timer"
           '';
