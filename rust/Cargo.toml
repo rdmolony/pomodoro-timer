@@ -2,6 +2,9 @@
 name = "pomodoro-timer-rust"
 version = "0.1.0"
 edition = "2021"
+description = "A minimal pomodoro timer built with Rust and Relm4"
+license = "MIT"
+authors = ["Generated with Claude Code"]
 
 [dependencies]
 relm4 = "0.8"
