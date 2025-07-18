@@ -470,4 +470,64 @@ mod tests {
         assert_eq!(model.notifications_enabled, false);
         assert!(result.is_none());
     }
+
+    #[test]
+    fn settings_model_should_persist_settings() {
+        use crate::settings_model::{SettingsModel, SettingsMsg};
+        use std::fs;
+        
+        let mut model = SettingsModel::init();
+        
+        // Change some settings
+        model.update(SettingsMsg::SetPomodoroMinutes(30));
+        model.update(SettingsMsg::SetEyeCheckEnabled(false));
+        
+        // Save settings
+        let save_result = model.save();
+        assert!(save_result.is_ok());
+        
+        // Load settings in a new model
+        let loaded_model = SettingsModel::load().unwrap_or_default();
+        
+        // Should have the same values
+        assert_eq!(loaded_model.pomodoro_minutes, 30);
+        assert_eq!(loaded_model.eye_check_enabled, false);
+        assert_eq!(loaded_model.short_break_minutes, 5); // Default unchanged
+        
+        // Clean up test file
+        if let Some(config_dir) = dirs::config_dir() {
+            let config_path = config_dir.join("pomodoro-timer").join("settings.json");
+            let _ = fs::remove_file(config_path);
+        }
+    }
+
+    #[test]
+    fn settings_model_should_create_settings_ui() {
+        use crate::settings_model::SettingsModel;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let model = SettingsModel::init();
+        
+        // Create the settings UI
+        let widgets = model.init_widgets();
+        
+        // Should have a main container
+        assert!(widgets.main_box.is_some());
+        
+        // Should have input fields for timer durations
+        assert!(widgets.pomodoro_spin.is_some());
+        assert!(widgets.short_break_spin.is_some());
+        assert!(widgets.long_break_spin.is_some());
+        
+        // Should have checkboxes for features
+        assert!(widgets.eye_check_checkbox.is_some());
+        assert!(widgets.notifications_checkbox.is_some());
+        
+        // Should have eye check interval setting
+        assert!(widgets.eye_check_interval_spin.is_some());
+    }
 }
