@@ -3,6 +3,8 @@ use crate::eye_check_model::{EyeCheckModel, EyeCheckMsg};
 use crate::settings_model::{SettingsModel, SettingsMsg};
 use relm4::prelude::*;
 use gtk::prelude::*;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum AppMsg {
@@ -24,6 +26,7 @@ pub struct AppModel {
     pub eye_check_interval_for_testing: Option<u64>, // seconds
     pub completed_sessions: u32,
     pub is_break_mode: bool,
+    pub notification_callback: Option<Rc<RefCell<Vec<String>>>>,
 }
 
 pub struct AppWidgets {
@@ -53,6 +56,7 @@ impl AppModel {
             eye_check_interval_for_testing: None,
             completed_sessions: 0,
             is_break_mode: false,
+            notification_callback: None,
         }
     }
     
@@ -210,5 +214,38 @@ impl AppModel {
         self.completed_sessions = 0;
         self.is_break_mode = false;
         self.timer_model.set_duration(self.settings_model.get_pomodoro_duration());
+    }
+    
+    pub fn set_notification_callback(&mut self, callback: Rc<RefCell<Vec<String>>>) {
+        self.notification_callback = Some(callback);
+    }
+    
+    pub fn send_pomodoro_finished_notification(&mut self) {
+        if self.settings_model.notifications_enabled {
+            self.send_notification("Pomodoro session complete! Time for a break.");
+        }
+    }
+    
+    pub fn send_break_finished_notification(&mut self) {
+        if self.settings_model.notifications_enabled {
+            self.send_notification("Break time is over! Ready for another pomodoro?");
+        }
+    }
+    
+    pub fn send_eye_check_notification(&mut self) {
+        if self.settings_model.notifications_enabled {
+            self.send_notification("20-20-20 eye check reminder: Look at something 20 feet away for 20 seconds.");
+        }
+    }
+    
+    pub fn set_notifications_enabled(&mut self, enabled: bool) {
+        use crate::settings_model::SettingsMsg;
+        self.settings_model.update(SettingsMsg::SetNotificationsEnabled(enabled));
+    }
+    
+    fn send_notification(&self, message: &str) {
+        if let Some(callback) = &self.notification_callback {
+            callback.borrow_mut().push(message.to_string());
+        }
     }
 }

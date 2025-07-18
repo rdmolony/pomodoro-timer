@@ -686,4 +686,50 @@ mod tests {
         assert_eq!(app.get_completed_sessions(), 0);
         assert!(!app.is_break_mode());
     }
+
+    #[test]
+    fn app_model_should_handle_notifications() {
+        use crate::app_model::AppModel;
+        use std::rc::Rc;
+        use std::cell::RefCell;
+        
+        let mut app = AppModel::init();
+        
+        // Should have notifications enabled by default
+        assert!(app.get_settings_model().notifications_enabled);
+        
+        // Create a notification tracker
+        let notifications = Rc::new(RefCell::new(Vec::new()));
+        app.set_notification_callback(notifications.clone());
+        
+        // Send a pomodoro finished notification
+        app.send_pomodoro_finished_notification();
+        
+        // Should have sent notification
+        assert_eq!(notifications.borrow().len(), 1);
+        assert!(notifications.borrow()[0].contains("Pomodoro session complete"));
+        
+        // Send break finished notification
+        app.send_break_finished_notification();
+        
+        // Should have sent another notification
+        assert_eq!(notifications.borrow().len(), 2);
+        assert!(notifications.borrow()[1].contains("Break time is over"));
+        
+        // Send eye check notification
+        app.send_eye_check_notification();
+        
+        // Should have sent eye check notification
+        assert_eq!(notifications.borrow().len(), 3);
+        assert!(notifications.borrow()[2].contains("20-20-20 eye check"));
+        
+        // Test notification suppression when disabled
+        app.set_notifications_enabled(false);
+        notifications.borrow_mut().clear();
+        
+        app.send_pomodoro_finished_notification();
+        
+        // Should not have sent notification when disabled
+        assert_eq!(notifications.borrow().len(), 0);
+    }
 }
