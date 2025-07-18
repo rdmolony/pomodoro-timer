@@ -1,11 +1,14 @@
 pub mod timer;
-mod timer_model;
-mod eye_check_model;
-mod settings_model;
-mod app_model;
+pub mod timer_model;
+pub mod eye_check_model;
+pub mod settings_model;
+pub mod app_model;
+pub mod main_app;
 
 pub use timer::Timer;
 pub use timer_model::TimerWidgets;
+pub use app_model::{AppModel, AppMsg, AppWidgets};
+pub use main_app::MainApp;
 
 #[cfg(test)]
 mod tests {
@@ -994,5 +997,22 @@ mod tests {
         // Should be completely clean
         assert!(!app.is_eye_check_timer_running());
         assert_eq!(app.get_active_eye_check_dialogs().len(), 0);
+    }
+
+    #[test]
+    fn main_application_should_initialize_relm4_app() {
+        // Test that we can create a Relm4 application component
+        use crate::MainApp;
+        
+        // Should be able to create component init data
+        let init_data = ();
+        
+        // Should be able to initialize the component
+        // This tests the basic structure without actually running GTK
+        let app = MainApp::new(init_data);
+        
+        // Should have proper initial state
+        assert!(app.is_initialized());
+        assert_eq!(app.get_app_id(), "com.example.pomodoro-timer");
     }
 }
