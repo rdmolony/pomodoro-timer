@@ -1,5 +1,8 @@
 # Pomodoro Timer: Vala vs Rust Implementation Comparison
 
+> [!WARN]
+> This has largely been written by `Claude` with minimal input from me
+
 This project demonstrates two different approaches to building the same GTK4 application using different languages and frameworks.
 
 ## Architecture Comparison
