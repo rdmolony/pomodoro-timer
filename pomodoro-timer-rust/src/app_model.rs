@@ -41,6 +41,21 @@ impl Default for WindowState {
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct MonitorInfo {
+    pub id: u32,
+    pub width: i32,
+    pub height: i32,
+    pub x: i32,
+    pub y: i32,
+}
+
+#[derive(Debug, Clone)]
+pub struct EyeCheckDialog {
+    pub monitor_id: u32,
+    pub is_visible: bool,
+}
+
 pub struct AppModel {
     pub timer_model: TimerModel,
     pub eye_check_model: EyeCheckModel,
@@ -52,6 +67,8 @@ pub struct AppModel {
     pub is_break_mode: bool,
     pub notification_callback: Option<Rc<RefCell<Vec<String>>>>,
     pub window_state: WindowState,
+    pub monitor_info: Vec<MonitorInfo>,
+    pub active_eye_check_dialogs: Vec<EyeCheckDialog>,
 }
 
 pub struct AppWidgets {
@@ -83,6 +100,8 @@ impl AppModel {
             is_break_mode: false,
             notification_callback: None,
             window_state: WindowState::default(),
+            monitor_info: vec![MonitorInfo { id: 0, width: 1920, height: 1080, x: 0, y: 0 }], // Default single monitor
+            active_eye_check_dialogs: Vec::new(),
         }
     }
     
@@ -313,5 +332,32 @@ impl AppModel {
     
     fn get_window_config_path() -> Option<PathBuf> {
         dirs::config_dir().map(|dir| dir.join("pomodoro-timer").join("window.json"))
+    }
+    
+    pub fn get_active_eye_check_dialogs(&self) -> Vec<EyeCheckDialog> {
+        self.active_eye_check_dialogs.clone()
+    }
+    
+    pub fn set_monitor_info(&mut self, monitor_info: Vec<MonitorInfo>) {
+        self.monitor_info = monitor_info;
+    }
+    
+    pub fn show_eye_check_on_all_monitors(&mut self) {
+        self.active_eye_check_dialogs.clear();
+        
+        for monitor in &self.monitor_info {
+            self.active_eye_check_dialogs.push(EyeCheckDialog {
+                monitor_id: monitor.id,
+                is_visible: true,
+            });
+        }
+    }
+    
+    pub fn dismiss_eye_check_on_monitor(&mut self, monitor_id: u32) {
+        self.active_eye_check_dialogs.retain(|dialog| dialog.monitor_id != monitor_id);
+    }
+    
+    pub fn dismiss_all_eye_checks(&mut self) {
+        self.active_eye_check_dialogs.clear();
     }
 }

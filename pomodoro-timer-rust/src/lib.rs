@@ -870,4 +870,64 @@ mod tests {
         // Verify full workflow completed successfully
         assert_eq!(notifications.borrow().len(), 8); // 4 session + 4 break notifications
     }
+
+    #[test]
+    fn application_should_handle_multi_monitor_eye_check() {
+        use crate::app_model::{AppModel, MonitorInfo};
+        
+        let mut app = AppModel::init();
+        
+        // Initially should have no active eye check dialogs
+        assert_eq!(app.get_active_eye_check_dialogs().len(), 0);
+        
+        // Simulate multi-monitor setup
+        let monitor_info = vec![
+            MonitorInfo { id: 0, width: 1920, height: 1080, x: 0, y: 0 },
+            MonitorInfo { id: 1, width: 1920, height: 1080, x: 1920, y: 0 },
+            MonitorInfo { id: 2, width: 1920, height: 1080, x: 0, y: 1080 },
+        ];
+        
+        app.set_monitor_info(monitor_info);
+        
+        // Show eye check on all monitors
+        app.show_eye_check_on_all_monitors();
+        
+        // Should have eye check dialogs on all monitors
+        let active_dialogs = app.get_active_eye_check_dialogs();
+        assert_eq!(active_dialogs.len(), 3);
+        
+        // Each dialog should be positioned on its respective monitor
+        assert_eq!(active_dialogs[0].monitor_id, 0);
+        assert_eq!(active_dialogs[1].monitor_id, 1);
+        assert_eq!(active_dialogs[2].monitor_id, 2);
+        
+        // All dialogs should be visible
+        for dialog in &active_dialogs {
+            assert!(dialog.is_visible);
+        }
+        
+        // Dismiss eye check on one monitor
+        app.dismiss_eye_check_on_monitor(1);
+        
+        // Should still have dialogs on other monitors
+        let remaining_dialogs = app.get_active_eye_check_dialogs();
+        assert_eq!(remaining_dialogs.len(), 2);
+        assert_eq!(remaining_dialogs[0].monitor_id, 0);
+        assert_eq!(remaining_dialogs[1].monitor_id, 2);
+        
+        // Dismiss all eye checks
+        app.dismiss_all_eye_checks();
+        
+        // Should have no active dialogs
+        assert_eq!(app.get_active_eye_check_dialogs().len(), 0);
+        
+        // Test single monitor fallback
+        app.set_monitor_info(vec![MonitorInfo { id: 0, width: 1920, height: 1080, x: 0, y: 0 }]);
+        app.show_eye_check_on_all_monitors();
+        
+        // Should have one dialog on single monitor
+        let single_dialog = app.get_active_eye_check_dialogs();
+        assert_eq!(single_dialog.len(), 1);
+        assert_eq!(single_dialog[0].monitor_id, 0);
+    }
 }

@@ -211,7 +211,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Integration test covering full user journey
 **Expected**: Complete pomodoro cycle works as expected
 
-## Test 37: [ ] Application should handle multi-monitor eye check
+## Test 37: [x] Application should handle multi-monitor eye check
 **Focus**: Multi-monitor support
 **Implementation**: Add multi-monitor eye check display
 **Expected**: Eye check dialogs appear on all monitors
