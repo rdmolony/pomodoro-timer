@@ -20,6 +20,8 @@ pub struct AppModel {
     pub eye_check_model: EyeCheckModel,
     pub settings_model: SettingsModel,
     pub settings_visible: bool,
+    pub eye_check_timer_running: bool,
+    pub eye_check_interval_for_testing: Option<u64>, // seconds
 }
 
 pub struct AppWidgets {
@@ -45,6 +47,8 @@ impl AppModel {
             eye_check_model,
             settings_model,
             settings_visible: false,
+            eye_check_timer_running: false,
+            eye_check_interval_for_testing: None,
         }
     }
     
@@ -144,5 +148,26 @@ impl AppModel {
             header_bar: Some(header_bar),
             settings_button: Some(settings_button),
         }
+    }
+    
+    pub fn start_eye_check_timer(&mut self) {
+        self.eye_check_timer_running = true;
+    }
+    
+    pub fn stop_eye_check_timer(&mut self) {
+        self.eye_check_timer_running = false;
+    }
+    
+    pub fn is_eye_check_timer_running(&self) -> bool {
+        self.eye_check_timer_running
+    }
+    
+    pub fn set_eye_check_interval_for_testing(&mut self, seconds: u64) {
+        self.eye_check_interval_for_testing = Some(seconds);
+    }
+    
+    pub fn trigger_eye_check(&mut self) {
+        use crate::eye_check_model::EyeCheckMsg;
+        self.eye_check_model.update(EyeCheckMsg::Show);
     }
 }

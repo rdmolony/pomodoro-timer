@@ -612,4 +612,37 @@ mod tests {
         // Should have settings button
         assert!(widgets.settings_button.is_some());
     }
+
+    #[test]
+    fn app_model_should_handle_20_20_20_timer_integration() {
+        use crate::app_model::AppModel;
+        
+        let mut app = AppModel::init();
+        
+        // Enable eye check in settings
+        assert!(app.get_settings_model().eye_check_enabled);
+        assert_eq!(app.get_settings_model().get_eye_check_interval(), 1200); // 20 minutes
+        
+        // Initially eye check should be hidden
+        assert!(!app.get_eye_check_model().is_visible());
+        
+        // Start eye check timer
+        app.start_eye_check_timer();
+        
+        // Should have eye check timer running
+        assert!(app.is_eye_check_timer_running());
+        
+        // Simulate time passing (we'll use a shorter interval for testing)
+        app.set_eye_check_interval_for_testing(1); // 1 second for testing
+        
+        // Trigger eye check
+        app.trigger_eye_check();
+        
+        // Eye check dialog should now be visible
+        assert!(app.get_eye_check_model().is_visible());
+        
+        // Stop eye check timer
+        app.stop_eye_check_timer();
+        assert!(!app.is_eye_check_timer_running());
+    }
 }
