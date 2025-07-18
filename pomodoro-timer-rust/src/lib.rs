@@ -645,4 +645,45 @@ mod tests {
         app.stop_eye_check_timer();
         assert!(!app.is_eye_check_timer_running());
     }
+
+    #[test]
+    fn app_model_should_handle_session_management() {
+        use crate::app_model::AppModel;
+        
+        let mut app = AppModel::init();
+        
+        // Initially should have no completed sessions
+        assert_eq!(app.get_completed_sessions(), 0);
+        
+        // Should not be in break mode initially
+        assert!(!app.is_break_mode());
+        assert!(!app.is_long_break_time());
+        
+        // Complete a pomodoro session
+        app.complete_pomodoro_session();
+        assert_eq!(app.get_completed_sessions(), 1);
+        
+        // Should now be in break mode
+        assert!(app.is_break_mode());
+        assert!(!app.is_long_break_time()); // First break should be short
+        
+        // Complete 3 more sessions to reach long break
+        app.complete_pomodoro_session();
+        app.complete_pomodoro_session();
+        app.complete_pomodoro_session();
+        assert_eq!(app.get_completed_sessions(), 4);
+        
+        // After 4 sessions, should be long break time
+        assert!(app.is_break_mode());
+        assert!(app.is_long_break_time());
+        
+        // Complete break
+        app.complete_break();
+        assert!(!app.is_break_mode());
+        
+        // Reset sessions
+        app.reset_sessions();
+        assert_eq!(app.get_completed_sessions(), 0);
+        assert!(!app.is_break_mode());
+    }
 }

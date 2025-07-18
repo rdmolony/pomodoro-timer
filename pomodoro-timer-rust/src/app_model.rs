@@ -22,6 +22,8 @@ pub struct AppModel {
     pub settings_visible: bool,
     pub eye_check_timer_running: bool,
     pub eye_check_interval_for_testing: Option<u64>, // seconds
+    pub completed_sessions: u32,
+    pub is_break_mode: bool,
 }
 
 pub struct AppWidgets {
@@ -49,6 +51,8 @@ impl AppModel {
             settings_visible: false,
             eye_check_timer_running: false,
             eye_check_interval_for_testing: None,
+            completed_sessions: 0,
+            is_break_mode: false,
         }
     }
     
@@ -169,5 +173,42 @@ impl AppModel {
     pub fn trigger_eye_check(&mut self) {
         use crate::eye_check_model::EyeCheckMsg;
         self.eye_check_model.update(EyeCheckMsg::Show);
+    }
+    
+    pub fn get_completed_sessions(&self) -> u32 {
+        self.completed_sessions
+    }
+    
+    pub fn is_break_mode(&self) -> bool {
+        self.is_break_mode
+    }
+    
+    pub fn is_long_break_time(&self) -> bool {
+        // Every 4 sessions, take a long break
+        self.is_break_mode && self.completed_sessions % 4 == 0
+    }
+    
+    pub fn complete_pomodoro_session(&mut self) {
+        self.completed_sessions += 1;
+        self.is_break_mode = true;
+        
+        // Set timer to appropriate break duration
+        if self.is_long_break_time() {
+            self.timer_model.set_duration(self.settings_model.get_long_break_duration());
+        } else {
+            self.timer_model.set_duration(self.settings_model.get_short_break_duration());
+        }
+    }
+    
+    pub fn complete_break(&mut self) {
+        self.is_break_mode = false;
+        // Reset timer to pomodoro duration
+        self.timer_model.set_duration(self.settings_model.get_pomodoro_duration());
+    }
+    
+    pub fn reset_sessions(&mut self) {
+        self.completed_sessions = 0;
+        self.is_break_mode = false;
+        self.timer_model.set_duration(self.settings_model.get_pomodoro_duration());
     }
 }
