@@ -157,12 +157,12 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Handle SettingsMsg variants in update
 **Expected**: Settings messages update model state
 
-## Test 27: [ ] SettingsModel should persist settings
+## Test 27: [x] SettingsModel should persist settings
 **Focus**: Settings persistence
 **Implementation**: Add settings save/load functionality
 **Expected**: Settings persist across application restarts
 
-## Test 28: [ ] SettingsModel should create settings UI
+## Test 28: [x] SettingsModel should create settings UI
 **Focus**: Settings UI creation
 **Implementation**: Create view method for settings panel
 **Expected**: view() returns properly structured settings UI

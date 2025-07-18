@@ -44,6 +44,10 @@ impl TimerModel {
         self.timer.is_running()
     }
     
+    pub fn set_duration(&mut self, duration: u32) {
+        self.timer.set_duration(duration);
+    }
+    
     pub fn update(&mut self, msg: TimerMsg) -> Option<()> {
         match msg {
             TimerMsg::Start => {

@@ -2,6 +2,7 @@ pub mod timer;
 mod timer_model;
 mod eye_check_model;
 mod settings_model;
+mod app_model;
 
 pub use timer::Timer;
 
@@ -529,5 +530,55 @@ mod tests {
         
         // Should have eye check interval setting
         assert!(widgets.eye_check_interval_spin.is_some());
+    }
+
+    #[test]
+    fn app_model_should_initialize_with_all_components() {
+        use crate::app_model::AppModel;
+        
+        let app = AppModel::init();
+        
+        // Should have all component models
+        assert!(app.get_timer_model().get_duration() > 0);
+        assert!(!app.get_eye_check_model().is_visible());
+        assert!(app.get_settings_model().pomodoro_minutes > 0);
+        
+        // Should start with settings hidden
+        assert!(!app.is_settings_visible());
+        
+        // Timer should be initialized with settings duration
+        assert_eq!(app.get_timer_model().get_duration(), 1500); // 25 minutes default
+    }
+
+    #[test]
+    fn app_model_should_handle_inter_component_communication() {
+        use crate::app_model::{AppModel, AppMsg};
+        use crate::timer_model::TimerMsg;
+        use crate::eye_check_model::EyeCheckMsg;
+        use crate::settings_model::SettingsMsg;
+        
+        let mut app = AppModel::init();
+        
+        // Test timer message forwarding
+        assert!(!app.get_timer_model().is_running());
+        app.update(AppMsg::Timer(TimerMsg::Start));
+        assert!(app.get_timer_model().is_running());
+        
+        // Test eye check message forwarding
+        assert!(!app.get_eye_check_model().is_visible());
+        app.update(AppMsg::EyeCheck(EyeCheckMsg::Show));
+        assert!(app.get_eye_check_model().is_visible());
+        
+        // Test settings message forwarding
+        assert_eq!(app.get_settings_model().pomodoro_minutes, 25);
+        app.update(AppMsg::Settings(SettingsMsg::SetPomodoroMinutes(30)));
+        assert_eq!(app.get_settings_model().pomodoro_minutes, 30);
+        
+        // Test app-level settings visibility
+        assert!(!app.is_settings_visible());
+        app.update(AppMsg::ShowSettings);
+        assert!(app.is_settings_visible());
+        app.update(AppMsg::HideSettings);
+        assert!(!app.is_settings_visible());
     }
 }
