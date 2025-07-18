@@ -930,4 +930,69 @@ mod tests {
         assert_eq!(single_dialog.len(), 1);
         assert_eq!(single_dialog[0].monitor_id, 0);
     }
+
+    #[test]
+    fn application_should_handle_graceful_shutdown() {
+        use crate::app_model::AppModel;
+        use std::rc::Rc;
+        use std::cell::RefCell;
+        
+        let mut app = AppModel::init();
+        
+        // Setup some state to clean up
+        let notifications = Rc::new(RefCell::new(Vec::new()));
+        app.set_notification_callback(notifications.clone());
+        
+        // Start some timers and operations
+        app.start_eye_check_timer();
+        app.complete_pomodoro_session();
+        app.show_eye_check_on_all_monitors();
+        
+        // Verify state before shutdown
+        assert!(app.is_eye_check_timer_running());
+        assert!(app.is_break_mode());
+        assert!(app.get_active_eye_check_dialogs().len() > 0);
+        
+        // Set some window state
+        app.update_window_state(crate::app_model::WindowState {
+            width: 800,
+            height: 600,
+            x: 100,
+            y: 50,
+            maximized: false,
+        });
+        
+        // Should be able to save state before shutdown
+        let shutdown_result = app.prepare_for_shutdown();
+        assert!(shutdown_result.is_ok());
+        
+        // Verify resources are cleaned up
+        assert!(!app.is_eye_check_timer_running());
+        assert_eq!(app.get_active_eye_check_dialogs().len(), 0);
+        
+        // Verify state was saved
+        let window_state = app.get_window_state();
+        assert_eq!(window_state.width, 800);
+        assert_eq!(window_state.height, 600);
+        
+        // Verify settings were saved
+        let save_result = app.save_all_state();
+        assert!(save_result.is_ok());
+        
+        // Test cleanup method
+        app.cleanup_resources();
+        
+        // Should be in clean state
+        assert!(!app.is_eye_check_timer_running());
+        assert_eq!(app.get_active_eye_check_dialogs().len(), 0);
+        assert_eq!(app.get_completed_sessions(), 0);
+        assert!(!app.is_break_mode());
+        
+        // Test emergency shutdown
+        app.emergency_shutdown();
+        
+        // Should be completely clean
+        assert!(!app.is_eye_check_timer_running());
+        assert_eq!(app.get_active_eye_check_dialogs().len(), 0);
+    }
 }

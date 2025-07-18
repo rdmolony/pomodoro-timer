@@ -360,4 +360,57 @@ impl AppModel {
     pub fn dismiss_all_eye_checks(&mut self) {
         self.active_eye_check_dialogs.clear();
     }
+    
+    pub fn prepare_for_shutdown(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        // Save all persistent state
+        self.save_window_state()?;
+        self.settings_model.save()?;
+        
+        // Stop all timers
+        self.stop_eye_check_timer();
+        
+        // Dismiss all dialogs
+        self.dismiss_all_eye_checks();
+        
+        Ok(())
+    }
+    
+    pub fn save_all_state(&self) -> Result<(), Box<dyn std::error::Error>> {
+        // Save window state
+        self.save_window_state()?;
+        
+        // Save settings
+        self.settings_model.save()?;
+        
+        Ok(())
+    }
+    
+    pub fn cleanup_resources(&mut self) {
+        // Stop all timers
+        self.stop_eye_check_timer();
+        
+        // Clear all dialogs
+        self.dismiss_all_eye_checks();
+        
+        // Reset session state
+        self.reset_sessions();
+        
+        // Clear notification callback
+        self.notification_callback = None;
+    }
+    
+    pub fn emergency_shutdown(&mut self) {
+        // Force stop all operations
+        self.stop_eye_check_timer();
+        self.dismiss_all_eye_checks();
+        
+        // Clear all state
+        self.completed_sessions = 0;
+        self.is_break_mode = false;
+        self.notification_callback = None;
+        self.active_eye_check_dialogs.clear();
+        
+        // Reset timer
+        self.timer_model.set_duration(self.settings_model.get_pomodoro_duration());
+    }
 }
