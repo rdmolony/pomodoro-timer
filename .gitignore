@@ -8,7 +8,6 @@ result-*
 
 # direnv
 .direnv/
-.envrc
 
 # Meson
 wrap-file-downloader-*
