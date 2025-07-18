@@ -1,6 +1,8 @@
-use crate::timer_model::{TimerModel, TimerMsg};
+use crate::timer_model::{TimerModel, TimerMsg, TimerWidgets};
 use crate::eye_check_model::{EyeCheckModel, EyeCheckMsg};
 use crate::settings_model::{SettingsModel, SettingsMsg};
+use relm4::prelude::*;
+use gtk::prelude::*;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum AppMsg {
@@ -18,6 +20,14 @@ pub struct AppModel {
     pub eye_check_model: EyeCheckModel,
     pub settings_model: SettingsModel,
     pub settings_visible: bool,
+}
+
+pub struct AppWidgets {
+    pub window: Option<gtk::ApplicationWindow>,
+    pub main_box: Option<gtk::Box>,
+    pub timer_widgets: Option<TimerWidgets>,
+    pub header_bar: Option<gtk::HeaderBar>,
+    pub settings_button: Option<gtk::Button>,
 }
 
 impl AppModel {
@@ -88,6 +98,51 @@ impl AppModel {
                 }
                 None
             }
+        }
+    }
+    
+    pub fn init_widgets(&self) -> AppWidgets {
+        // Create main window
+        let window = gtk::ApplicationWindow::new(&gtk::Application::new(
+            Some("com.example.pomodoro-timer"),
+            Default::default(),
+        ));
+        window.set_title(Some("Pomodoro Timer"));
+        window.set_default_size(400, 300);
+        
+        // Create header bar
+        let header_bar = gtk::HeaderBar::new();
+        header_bar.set_title_widget(Some(&gtk::Label::new(Some("Pomodoro Timer"))));
+        
+        // Create settings button
+        let settings_button = gtk::Button::with_label("Settings");
+        header_bar.pack_end(&settings_button);
+        
+        window.set_titlebar(Some(&header_bar));
+        
+        // Create main content box
+        let main_box = gtk::Box::new(gtk::Orientation::Vertical, 12);
+        main_box.set_margin_top(12);
+        main_box.set_margin_bottom(12);
+        main_box.set_margin_start(12);
+        main_box.set_margin_end(12);
+        
+        // Create timer widgets
+        let timer_widgets = self.timer_model.init_widgets();
+        
+        // Add timer widgets to main box
+        if let Some(timer_box) = &timer_widgets.main_box {
+            main_box.append(timer_box);
+        }
+        
+        window.set_child(Some(&main_box));
+        
+        AppWidgets {
+            window: Some(window),
+            main_box: Some(main_box),
+            timer_widgets: Some(timer_widgets),
+            header_bar: Some(header_bar),
+            settings_button: Some(settings_button),
         }
     }
 }

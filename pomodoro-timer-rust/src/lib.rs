@@ -5,6 +5,7 @@ mod settings_model;
 mod app_model;
 
 pub use timer::Timer;
+pub use timer_model::TimerWidgets;
 
 #[cfg(test)]
 mod tests {
@@ -580,5 +581,35 @@ mod tests {
         assert!(app.is_settings_visible());
         app.update(AppMsg::HideSettings);
         assert!(!app.is_settings_visible());
+    }
+
+    #[test]
+    fn app_model_should_create_main_window_ui() {
+        use crate::app_model::AppModel;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let app = AppModel::init();
+        
+        // Create the main window UI
+        let widgets = app.init_widgets();
+        
+        // Should have a main window
+        assert!(widgets.window.is_some());
+        
+        // Should have the main application box
+        assert!(widgets.main_box.is_some());
+        
+        // Should have timer UI components
+        assert!(widgets.timer_widgets.is_some());
+        
+        // Should have menu bar or header bar
+        assert!(widgets.header_bar.is_some());
+        
+        // Should have settings button
+        assert!(widgets.settings_button.is_some());
     }
 }
