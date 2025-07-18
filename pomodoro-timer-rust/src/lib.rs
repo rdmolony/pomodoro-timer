@@ -732,4 +732,57 @@ mod tests {
         // Should not have sent notification when disabled
         assert_eq!(notifications.borrow().len(), 0);
     }
+
+    #[test]
+    fn app_model_should_handle_window_state_persistence() {
+        use crate::app_model::{AppModel, WindowState};
+        
+        let mut app = AppModel::init();
+        
+        // Should have default window state
+        let window_state = app.get_window_state();
+        assert_eq!(window_state.width, 400);
+        assert_eq!(window_state.height, 300);
+        assert_eq!(window_state.x, 0);
+        assert_eq!(window_state.y, 0);
+        assert!(!window_state.maximized);
+        
+        // Update window state
+        app.update_window_state(WindowState {
+            width: 600,
+            height: 450,
+            x: 100,
+            y: 50,
+            maximized: false,
+        });
+        
+        // Should have updated state
+        let updated_state = app.get_window_state();
+        assert_eq!(updated_state.width, 600);
+        assert_eq!(updated_state.height, 450);
+        assert_eq!(updated_state.x, 100);
+        assert_eq!(updated_state.y, 50);
+        assert!(!updated_state.maximized);
+        
+        // Test maximized state
+        app.set_window_maximized(true);
+        assert!(app.get_window_state().maximized);
+        
+        // Test saving and loading window state
+        let save_result = app.save_window_state();
+        assert!(save_result.is_ok());
+        
+        // Create new app instance and load state
+        let mut app2 = AppModel::init();
+        let load_result = app2.load_window_state();
+        assert!(load_result.is_ok());
+        
+        // Should have loaded the saved state
+        let loaded_state = app2.get_window_state();
+        assert_eq!(loaded_state.width, 600);
+        assert_eq!(loaded_state.height, 450);
+        assert_eq!(loaded_state.x, 100);
+        assert_eq!(loaded_state.y, 50);
+        assert!(loaded_state.maximized);
+    }
 }

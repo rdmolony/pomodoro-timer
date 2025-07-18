@@ -5,6 +5,9 @@ use relm4::prelude::*;
 use gtk::prelude::*;
 use std::rc::Rc;
 use std::cell::RefCell;
+use serde::{Deserialize, Serialize};
+use std::fs;
+use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum AppMsg {
@@ -17,6 +20,27 @@ pub enum AppMsg {
     LoadSettings,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WindowState {
+    pub width: i32,
+    pub height: i32,
+    pub x: i32,
+    pub y: i32,
+    pub maximized: bool,
+}
+
+impl Default for WindowState {
+    fn default() -> Self {
+        WindowState {
+            width: 400,
+            height: 300,
+            x: 0,
+            y: 0,
+            maximized: false,
+        }
+    }
+}
+
 pub struct AppModel {
     pub timer_model: TimerModel,
     pub eye_check_model: EyeCheckModel,
@@ -27,6 +51,7 @@ pub struct AppModel {
     pub completed_sessions: u32,
     pub is_break_mode: bool,
     pub notification_callback: Option<Rc<RefCell<Vec<String>>>>,
+    pub window_state: WindowState,
 }
 
 pub struct AppWidgets {
@@ -57,6 +82,7 @@ impl AppModel {
             completed_sessions: 0,
             is_break_mode: false,
             notification_callback: None,
+            window_state: WindowState::default(),
         }
     }
     
@@ -247,5 +273,45 @@ impl AppModel {
         if let Some(callback) = &self.notification_callback {
             callback.borrow_mut().push(message.to_string());
         }
+    }
+    
+    pub fn get_window_state(&self) -> WindowState {
+        self.window_state.clone()
+    }
+    
+    pub fn update_window_state(&mut self, state: WindowState) {
+        self.window_state = state;
+    }
+    
+    pub fn set_window_maximized(&mut self, maximized: bool) {
+        self.window_state.maximized = maximized;
+    }
+    
+    pub fn save_window_state(&self) -> Result<(), Box<dyn std::error::Error>> {
+        if let Some(config_path) = Self::get_window_config_path() {
+            // Create parent directories if they don't exist
+            if let Some(parent) = config_path.parent() {
+                fs::create_dir_all(parent)?;
+            }
+            
+            let json = serde_json::to_string_pretty(&self.window_state)?;
+            fs::write(config_path, json)?;
+        }
+        Ok(())
+    }
+    
+    pub fn load_window_state(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        if let Some(config_path) = Self::get_window_config_path() {
+            if config_path.exists() {
+                let json = fs::read_to_string(config_path)?;
+                let window_state: WindowState = serde_json::from_str(&json)?;
+                self.window_state = window_state;
+            }
+        }
+        Ok(())
+    }
+    
+    fn get_window_config_path() -> Option<PathBuf> {
+        dirs::config_dir().map(|dir| dir.join("pomodoro-timer").join("window.json"))
     }
 }

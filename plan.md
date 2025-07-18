@@ -199,7 +199,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Add notification service
 **Expected**: Application shows system notifications for events
 
-## Test 35: [ ] AppModel should handle window state persistence
+## Test 35: [x] AppModel should handle window state persistence
 **Focus**: Window state management
 **Implementation**: Add window size/position persistence
 **Expected**: Window state persists across application restarts
