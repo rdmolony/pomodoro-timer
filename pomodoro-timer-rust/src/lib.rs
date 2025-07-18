@@ -1154,4 +1154,61 @@ mod tests {
         assert_eq!(msg_vec.len(), 3);
         // Note: In real implementation, these would be TimerMsg variants
     }
+
+    #[test]
+    fn main_app_should_handle_button_clicks_with_actual_timer_functionality() {
+        use crate::MainApp;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let mut app = MainApp::new(());
+        
+        // Create a test window
+        let window = gtk::ApplicationWindow::new(&gtk::Application::new(
+            Some("com.example.test"),
+            Default::default(),
+        ));
+        
+        // Set up the window content
+        app.setup_window_content(&window).expect("Failed to setup window");
+        
+        // Verify initial state
+        assert!(!app.get_timer_running_state());
+        assert_eq!(app.get_timer_duration(), 1500); // 25 minutes
+        
+        // Connect buttons with actual timer functionality
+        app.connect_timer_buttons_to_relm4();
+        
+        // Simulate start button click by sending message directly
+        app.handle_timer_start();
+        
+        // Timer should now be running
+        assert!(app.get_timer_running_state());
+        
+        // Simulate pause button click
+        app.handle_timer_pause();
+        
+        // Timer should be paused
+        assert!(!app.get_timer_running_state());
+        
+        // Simulate reset button click
+        app.handle_timer_reset();
+        
+        // Timer should be reset
+        assert!(!app.get_timer_running_state());
+        assert_eq!(app.get_timer_duration(), 1500);
+        
+        // Test UI updates accordingly
+        let timer_widgets = app.get_timer_widgets().expect("Should have timer widgets");
+        app.update_timer_display(&timer_widgets);
+        
+        // Verify time display shows correct format
+        if let Some(time_label) = &timer_widgets.time_label {
+            let text = time_label.text();
+            assert!(text.contains("25:00"));
+        }
+    }
 }

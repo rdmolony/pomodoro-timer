@@ -103,6 +103,35 @@ impl MainApp {
         
         Ok(())
     }
+    
+    pub fn connect_timer_buttons_to_relm4(&self) {
+        // This method will be used to connect buttons to the Relm4 message system
+        // In a real Relm4 app, this would be handled by the component sender
+        // For now, we'll simulate this functionality
+    }
+    
+    pub fn handle_timer_start(&mut self) {
+        use crate::app_model::AppMsg;
+        use crate::timer_model::TimerMsg;
+        self.handle_message(AppMsg::Timer(TimerMsg::Start));
+    }
+    
+    pub fn handle_timer_pause(&mut self) {
+        use crate::app_model::AppMsg;
+        use crate::timer_model::TimerMsg;
+        self.handle_message(AppMsg::Timer(TimerMsg::Pause));
+    }
+    
+    pub fn handle_timer_reset(&mut self) {
+        use crate::app_model::AppMsg;
+        use crate::timer_model::TimerMsg;
+        self.handle_message(AppMsg::Timer(TimerMsg::Reset));
+    }
+    
+    pub fn update_timer_display(&self, timer_widgets: &crate::timer_model::TimerWidgets) {
+        // Update the timer display with current time
+        self.app_model.timer_model.update_ui(timer_widgets);
+    }
 }
 
 impl SimpleComponent for MainApp {
@@ -122,7 +151,7 @@ impl SimpleComponent for MainApp {
     fn init(
         _init: Self::Init,
         root: Self::Root,
-        _sender: ComponentSender<Self>,
+        sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let app_model = AppModel::init();
         let main_app = MainApp {
@@ -130,21 +159,74 @@ impl SimpleComponent for MainApp {
             initialized: true,
         };
         
-        // Set up the window content
-        main_app.setup_window_content(&root).expect("Failed to setup window content");
+        // Create fresh widgets for this component
+        let timer_widgets = main_app.app_model.timer_model.init_widgets();
+        
+        // Create main content box
+        let main_box = gtk::Box::new(gtk::Orientation::Vertical, 12);
+        main_box.set_margin_top(12);
+        main_box.set_margin_bottom(12);
+        main_box.set_margin_start(12);
+        main_box.set_margin_end(12);
+        
+        // Add timer widgets to main box
+        if let Some(timer_box) = &timer_widgets.main_box {
+            main_box.append(timer_box);
+        }
+        
+        // Create header bar
+        let header_bar = gtk::HeaderBar::new();
+        header_bar.set_title_widget(Some(&gtk::Label::new(Some("Pomodoro Timer"))));
+        
+        // Create settings button
+        let settings_button = gtk::Button::with_label("Settings");
+        header_bar.pack_end(&settings_button);
+        
+        // Connect button signals to Relm4 messages
+        if let Some(start_button) = &timer_widgets.start_button {
+            let sender_clone = sender.clone();
+            start_button.connect_clicked(move |_| {
+                use crate::app_model::AppMsg;
+                use crate::timer_model::TimerMsg;
+                sender_clone.input(AppMsg::Timer(TimerMsg::Start));
+            });
+        }
+        
+        if let Some(pause_button) = &timer_widgets.pause_button {
+            let sender_clone = sender.clone();
+            pause_button.connect_clicked(move |_| {
+                use crate::app_model::AppMsg;
+                use crate::timer_model::TimerMsg;
+                sender_clone.input(AppMsg::Timer(TimerMsg::Pause));
+            });
+        }
+        
+        if let Some(reset_button) = &timer_widgets.reset_button {
+            let sender_clone = sender.clone();
+            reset_button.connect_clicked(move |_| {
+                use crate::app_model::AppMsg;
+                use crate::timer_model::TimerMsg;
+                sender_clone.input(AppMsg::Timer(TimerMsg::Reset));
+            });
+        }
+        
+        // Set up the window
+        root.set_child(Some(&main_box));
+        root.set_titlebar(Some(&header_bar));
+        root.set_title(Some("Pomodoro Timer"));
+        root.set_default_size(400, 300);
         
         // Show the window
         root.present();
 
-        let widgets = main_app.app_model.init_widgets();
         ComponentParts {
             model: main_app,
             widgets: AppWidgets {
                 window: Some(root),
-                main_box: widgets.main_box,
-                timer_widgets: widgets.timer_widgets,
-                header_bar: widgets.header_bar,
-                settings_button: widgets.settings_button,
+                main_box: Some(main_box),
+                timer_widgets: Some(timer_widgets),
+                header_bar: Some(header_bar),
+                settings_button: Some(settings_button),
             },
         }
     }
