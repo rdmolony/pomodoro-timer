@@ -785,4 +785,89 @@ mod tests {
         assert_eq!(loaded_state.y, 50);
         assert!(loaded_state.maximized);
     }
+
+    #[test]
+    fn application_should_handle_complete_pomodoro_workflow() {
+        use crate::app_model::AppModel;
+        use crate::timer_model::TimerMsg;
+        use std::rc::Rc;
+        use std::cell::RefCell;
+        
+        let mut app = AppModel::init();
+        
+        // Setup notification tracking
+        let notifications = Rc::new(RefCell::new(Vec::new()));
+        app.set_notification_callback(notifications.clone());
+        
+        // Initial state - should be pomodoro mode with 25 minutes
+        assert_eq!(app.get_timer_model().get_duration(), 1500); // 25 minutes
+        assert_eq!(app.get_completed_sessions(), 0);
+        assert!(!app.is_break_mode());
+        
+        // Start pomodoro timer
+        app.update(crate::app_model::AppMsg::Timer(TimerMsg::Start));
+        assert!(app.get_timer_model().is_running());
+        
+        // Simulate pomodoro completion
+        app.complete_pomodoro_session();
+        app.send_pomodoro_finished_notification();
+        
+        // Should be in break mode after session
+        assert_eq!(app.get_completed_sessions(), 1);
+        assert!(app.is_break_mode());
+        assert!(!app.is_long_break_time()); // First break should be short
+        assert_eq!(app.get_timer_model().get_duration(), 300); // 5 minutes
+        
+        // Should have sent notification
+        assert_eq!(notifications.borrow().len(), 1);
+        assert!(notifications.borrow()[0].contains("Pomodoro session complete"));
+        
+        // Complete the break
+        app.complete_break();
+        app.send_break_finished_notification();
+        
+        // Should be back to pomodoro mode
+        assert!(!app.is_break_mode());
+        assert_eq!(app.get_timer_model().get_duration(), 1500); // 25 minutes
+        assert_eq!(notifications.borrow().len(), 2);
+        assert!(notifications.borrow()[1].contains("Break time is over"));
+        
+        // Complete 3 more sessions to reach long break
+        for i in 2..=4 {
+            app.complete_pomodoro_session();
+            app.send_pomodoro_finished_notification();
+            assert_eq!(app.get_completed_sessions(), i);
+            
+            if i == 4 {
+                // 4th session should trigger long break
+                assert!(app.is_long_break_time());
+                assert_eq!(app.get_timer_model().get_duration(), 900); // 15 minutes
+            } else {
+                // 2nd and 3rd sessions should be short breaks
+                assert!(!app.is_long_break_time());
+                assert_eq!(app.get_timer_model().get_duration(), 300); // 5 minutes
+            }
+            
+            app.complete_break();
+            app.send_break_finished_notification();
+        }
+        
+        // Should have completed full cycle
+        assert_eq!(app.get_completed_sessions(), 4);
+        assert!(!app.is_break_mode());
+        assert_eq!(app.get_timer_model().get_duration(), 1500); // Back to pomodoro
+        
+        // Test eye check integration
+        assert!(!app.get_eye_check_model().is_visible());
+        app.start_eye_check_timer();
+        app.trigger_eye_check();
+        assert!(app.get_eye_check_model().is_visible());
+        
+        // Test settings persistence
+        let save_result = app.save_window_state();
+        assert!(save_result.is_ok());
+        
+        // Verify full workflow completed successfully
+        assert_eq!(notifications.borrow().len(), 8); // 4 session + 4 break notifications
+    }
 }
