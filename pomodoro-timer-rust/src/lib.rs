@@ -308,4 +308,23 @@ mod tests {
         // Should initialize as hidden
         assert!(!model.is_visible());
     }
+
+    #[test]
+    fn eye_check_model_should_show_dialog_on_show_message() {
+        use crate::eye_check_model::{EyeCheckModel, EyeCheckMsg};
+        
+        let mut model = EyeCheckModel::init();
+        
+        // Initially hidden
+        assert!(!model.is_visible());
+        
+        // Process Show message
+        let result = model.update(EyeCheckMsg::Show);
+        
+        // Should now be visible
+        assert!(model.is_visible());
+        
+        // Should not cause any side effects
+        assert!(result.is_none());
+    }
 }
