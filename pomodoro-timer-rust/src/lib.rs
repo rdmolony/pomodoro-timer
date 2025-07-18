@@ -1,5 +1,6 @@
 pub mod timer;
 mod timer_model;
+mod eye_check_model;
 
 pub use timer::Timer;
 
@@ -296,5 +297,15 @@ mod tests {
         
         assert_eq!(messages.borrow().len(), 1);
         assert!(matches!(messages.borrow()[0], TimerMsg::Pause));
+    }
+
+    #[test]
+    fn eye_check_model_should_initialize_hidden() {
+        use crate::eye_check_model::EyeCheckModel;
+        
+        let model = EyeCheckModel::init();
+        
+        // Should initialize as hidden
+        assert!(!model.is_visible());
     }
 }
