@@ -1,9 +1,11 @@
+/// Core timer logic - pure business logic with no UI dependencies
+/// This demonstrates separation of concerns: timer logic is independent of UI
 pub struct Timer {
-    duration: u32,
-    remaining: u32,
-    running: bool,
-    tick_callback: Option<Box<dyn FnMut(u32)>>,
-    finished_callback: Option<Box<dyn FnMut()>>,
+    duration: u32,      // Total duration in seconds
+    remaining: u32,     // Current remaining time in seconds
+    running: bool,      // Whether the timer is actively counting down
+    tick_callback: Option<Box<dyn FnMut(u32)>>,     // Called every second
+    finished_callback: Option<Box<dyn FnMut()>>,    // Called when timer reaches 0
 }
 
 impl Timer {

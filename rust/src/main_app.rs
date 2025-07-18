@@ -3,6 +3,12 @@ use relm4::prelude::*;
 use gtk::prelude::*;
 use gtk::glib;
 
+/// Main application component following Relm4's reactive architecture
+/// 
+/// This component implements the Model-View-Update pattern where:
+/// - Model: AppModel manages application state
+/// - View: GTK4 widgets defined in init()
+/// - Update: Messages trigger state changes and UI updates
 pub struct MainApp {
     app_model: AppModel,
 }

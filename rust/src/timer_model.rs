@@ -4,18 +4,21 @@ use gtk::prelude::*;
 use std::rc::Rc;
 use std::cell::RefCell;
 
+/// Messages that can be sent to control the timer
 #[derive(Debug, Clone, PartialEq)]
 pub enum TimerMsg {
-    Start,
-    Pause,
-    Reset,
-    Tick,
+    Start,  // Start the timer
+    Pause,  // Pause the timer
+    Reset,  // Reset timer to initial duration
+    Tick,   // Advance timer by one second
 }
 
+/// Timer model that bridges the core Timer logic with the UI
 pub struct TimerModel {
     timer: Timer,
 }
 
+/// Widget references for the timer UI components
 pub struct TimerWidgets {
     pub main_box: Option<gtk::Box>,
     pub time_label: Option<gtk::Label>,
