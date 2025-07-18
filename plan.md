@@ -120,7 +120,7 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Create EyeCheckModel with visibility state
 **Expected**: EyeCheckModel::init() creates hidden dialog
 
-## Test 20: [ ] EyeCheckModel should show dialog on Show message
+## Test 20: [x] EyeCheckModel should show dialog on Show message
 **Focus**: Dialog visibility control
 **Implementation**: Handle EyeCheckMsg::Show in update
 **Expected**: Show message makes dialog visible

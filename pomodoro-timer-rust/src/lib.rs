@@ -327,4 +327,29 @@ mod tests {
         // Should not cause any side effects
         assert!(result.is_none());
     }
+
+    #[test]
+    fn eye_check_model_should_create_fullscreen_dialog_ui() {
+        use crate::eye_check_model::EyeCheckModel;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let model = EyeCheckModel::init();
+        
+        // Create the dialog UI
+        let widgets = model.init_widgets();
+        
+        // Should have a window container
+        assert!(widgets.window.is_some());
+        
+        // Should have a message label
+        assert!(widgets.message_label.is_some());
+        
+        // Should have dismiss and snooze buttons
+        assert!(widgets.dismiss_button.is_some());
+        assert!(widgets.snooze_button.is_some());
+    }
 }
