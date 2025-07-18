@@ -1211,4 +1211,64 @@ mod tests {
             assert!(text.contains("25:00"));
         }
     }
+
+    #[test]
+    fn main_app_should_update_ui_when_timer_state_changes() {
+        use crate::MainApp;
+        
+        // Initialize GTK for testing
+        if gtk::init().is_err() {
+            return; // Skip test if GTK can't be initialized
+        }
+        
+        let mut app = MainApp::new(());
+        
+        // Get the timer widgets
+        let timer_widgets = app.get_timer_widgets().expect("Should have timer widgets");
+        
+        // Initial state should show 25:00
+        app.update_timer_display(&timer_widgets);
+        if let Some(time_label) = &timer_widgets.time_label {
+            let initial_text = time_label.text();
+            assert!(initial_text.contains("25:00"));
+        }
+        
+        // Start the timer
+        app.handle_timer_start();
+        
+        // UI should update to show timer is running
+        app.update_ui_state(&timer_widgets);
+        
+        // Verify timer is running
+        assert!(app.get_timer_running_state());
+        
+        // Simulate a tick to change the time
+        app.handle_timer_tick();
+        
+        // Update UI after tick
+        app.update_timer_display(&timer_widgets);
+        
+        // Time should have changed
+        if let Some(time_label) = &timer_widgets.time_label {
+            let updated_text = time_label.text();
+            assert!(updated_text.contains("24:59"));
+        }
+        
+        // Pause the timer
+        app.handle_timer_pause();
+        app.update_ui_state(&timer_widgets);
+        
+        // Timer should be paused
+        assert!(!app.get_timer_running_state());
+        
+        // Reset the timer
+        app.handle_timer_reset();
+        app.update_timer_display(&timer_widgets);
+        
+        // Time should be back to 25:00
+        if let Some(time_label) = &timer_widgets.time_label {
+            let reset_text = time_label.text();
+            assert!(reset_text.contains("25:00"));
+        }
+    }
 }
