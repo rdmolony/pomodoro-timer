@@ -1,6 +1,7 @@
 pub mod timer;
 mod timer_model;
 mod eye_check_model;
+mod settings_model;
 
 pub use timer::Timer;
 
@@ -425,5 +426,48 @@ mod tests {
         // For the test, we'll just verify the connection works
         model.update(EyeCheckMsg::Dismiss);
         assert!(!model.is_visible());
+    }
+
+    #[test]
+    fn settings_model_should_initialize_with_defaults() {
+        use crate::settings_model::SettingsModel;
+        
+        let model = SettingsModel::init();
+        
+        // Should initialize with default values
+        assert_eq!(model.pomodoro_minutes, 25);
+        assert_eq!(model.short_break_minutes, 5);
+        assert_eq!(model.long_break_minutes, 15);
+        assert_eq!(model.eye_check_enabled, true);
+        assert_eq!(model.eye_check_interval, 20);
+        assert_eq!(model.notifications_enabled, true);
+        
+        // Check duration getters
+        assert_eq!(model.get_pomodoro_duration(), 1500); // 25 * 60
+        assert_eq!(model.get_short_break_duration(), 300); // 5 * 60
+        assert_eq!(model.get_long_break_duration(), 900); // 15 * 60
+        assert_eq!(model.get_eye_check_interval(), 1200); // 20 * 60
+    }
+
+    #[test]
+    fn settings_model_should_handle_settings_changes() {
+        use crate::settings_model::{SettingsModel, SettingsMsg};
+        
+        let mut model = SettingsModel::init();
+        
+        // Test pomodoro minutes change
+        let result = model.update(SettingsMsg::SetPomodoroMinutes(30));
+        assert_eq!(model.pomodoro_minutes, 30);
+        assert!(result.is_none());
+        
+        // Test eye check enabled change
+        let result = model.update(SettingsMsg::SetEyeCheckEnabled(false));
+        assert_eq!(model.eye_check_enabled, false);
+        assert!(result.is_none());
+        
+        // Test notifications enabled change
+        let result = model.update(SettingsMsg::SetNotificationsEnabled(false));
+        assert_eq!(model.notifications_enabled, false);
+        assert!(result.is_none());
     }
 }

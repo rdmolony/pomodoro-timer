@@ -130,17 +130,17 @@ This plan follows Kent Beck's Test-Driven Development methodology for transpilin
 **Implementation**: Create view method for fullscreen dialog
 **Expected**: view() returns fullscreen dialog with proper layout
 
-## Test 22: [ ] EyeCheckModel should handle dismiss action
+## Test 22: [x] EyeCheckModel should handle dismiss action
 **Focus**: Dialog dismissal handling
 **Implementation**: Handle EyeCheckMsg::Dismiss in update
 **Expected**: Dismiss message hides dialog and sends notification
 
-## Test 23: [ ] EyeCheckModel should handle snooze action
+## Test 23: [x] EyeCheckModel should handle snooze action
 **Focus**: Dialog snooze handling
 **Implementation**: Handle EyeCheckMsg::Snooze in update
 **Expected**: Snooze message hides dialog and schedules reminder
 
-## Test 24: [ ] EyeCheckModel should handle escape key
+## Test 24: [x] EyeCheckModel should handle escape key
 **Focus**: Keyboard interaction
 **Implementation**: Add key event handling
 **Expected**: Escape key dismisses dialog
