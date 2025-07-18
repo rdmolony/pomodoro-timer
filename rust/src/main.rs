@@ -5,15 +5,16 @@ fn main() {
     // Create the Relm4 application
     let app = RelmApp::new("com.example.pomodoro-timer");
     
-    println!("Starting Pomodoro Timer with Relm4!");
+    println!("🍅 Pomodoro Timer - Rust/Relm4 Implementation");
+    println!("===============================================");
+    println!();
     println!("Features:");
-    println!("- 25 minute pomodoro sessions");
-    println!("- 5 minute short breaks");
-    println!("- 15 minute long breaks (every 4 sessions)");
-    println!("- Eye check reminders every 20 minutes");
-    println!("- Settings button to configure timers");
-    println!("- Window state persistence");
+    println!("  • 25-minute pomodoro timer");
+    println!("  • Start/Pause/Reset controls");
+    println!("  • Real-time countdown display");
+    println!("  • Clean GTK4 interface");
+    println!();
     
-    // Run the application
+    // Run the application with Relm4's reactive architecture
     app.run::<MainApp>(());
 }
