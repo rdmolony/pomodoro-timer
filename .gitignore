@@ -47,3 +47,7 @@ claude-flow
 claude-flow.bat
 claude-flow.ps1
 hive-mind-prompt-*.txt
+
+# Claude Flow metrics and temporary files
+.claude-flow/metrics/
+rust/.claude-flow/
